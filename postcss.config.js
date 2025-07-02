@@ -1,8 +1,9 @@
-// postcss.config.js
+import tailwindcssPostcss from '@tailwindcss/postcss'
+import autoprefixer from 'autoprefixer'
+
 export default {
-    plugins: {
-        '@tailwindcss/postcss': {},
-        daisyui: {},
-        autoprefixer: {},
-    },
+    plugins: [
+        tailwindcssPostcss(),
+        autoprefixer()
+    ]
 }
