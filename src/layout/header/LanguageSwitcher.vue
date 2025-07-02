@@ -7,8 +7,8 @@ const {locale} = useI18n()
 
 <template>
   <select v-model="locale" class="select select-sm select-bordered">
-    <option value="ru">🇷🇺 Русский</option>
-    <option value="en">🇬🇧 English</option>
+    <option value="ru">Русский</option>
+    <option value="en">English</option>
   </select>
 </template>
 

@@ -5,7 +5,3 @@ import RegisterForm from "@/components/forms/RegisterForm.vue";
 <template>
     <RegisterForm></RegisterForm>
 </template>
-
-<style scoped>
-
-</style>

@@ -41,7 +41,7 @@ const verifyCaptcha = async (response) => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center bg-base-100 p-4">
+  <div class="flex items-center justify-center bg-base-100">
     <div class="w-full max-w-md bg-base-200 rounded-xl shadow-lg p-6">
       <div class="text-center">
         <h1 class="text-2xl font-bold text-primary">Регистрация</h1>

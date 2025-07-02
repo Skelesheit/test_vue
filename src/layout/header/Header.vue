@@ -4,14 +4,12 @@ import LanguageSwitcher from "@/layout/header/LanguageSwitcher.vue";
 </script>
 
 <template>
-  <div class="min-h-screen bg-base-100 text-base-content w-full">
-      <div class="flex-1">
-        <h1 class="font-bold text-xl text-primary">Neurocam</h1>
-      </div>
-      <div class="flex flex-row flex-none gap-2">
-        <ThemeSwitcher />
-        <LanguageSwitcher/>
-      </div>
+  <div class="w-full flex justify-between items-center px-2">
+    <h1 class="font-bold text-xl text-primary">Neurocam</h1>
+    <div class="flex items-center gap-2">
+      <ThemeSwitcher />
+      <LanguageSwitcher />
+    </div>
   </div>
 </template>
 
