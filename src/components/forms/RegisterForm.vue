@@ -1,43 +1,48 @@
 <script setup>
-import { ref } from 'vue';
-import { VueReCaptcha } from 'vue-recaptcha-v3';
+import { ref } from 'vue'
+import YandexCaptcha from '@/components/YandexCaptcha.vue'
 
-// Переменные окружения
-const captchaKey = import.meta.env.VITE_APP_CAPTCHA_KEY;
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const email = ref('')
+const password = ref('')
+const confirm = ref('')
+const accepted = ref(false)
+const captchaToken = ref(null)
+const captchaVerified = ref(false)
 
-// Состояние для капчи
-const captchaVerified = ref(false);
+const apiUrl = import.meta.env.VITE_APP_API_URL
 
-// Метод для обработки ответа капчи
-const onCaptchaVerified = (response) => {
-  verifyCaptcha(response);
-};
+const onCaptchaVerified = (token) => {
+  captchaToken.value = token
+}
 
-// Метод для отправки ответа на сервер
-const verifyCaptcha = async (response) => {
+const onSubmit = async () => {
+  if (!captchaToken.value) {
+    alert('Подтвердите, что вы не робот')
+    return
+  }
+
   try {
     const res = await fetch(`${apiUrl}/verify-captcha`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ captchaResponse: response }),
-    });
+      body: JSON.stringify({captchaResponse: captchaToken.value}),
+    })
 
-    const result = await res.json();
-    // Обработай результат, например:
+    const result = await res.json()
+    captchaVerified.value = result.success
+
     if (result.success) {
-      captchaVerified.value = true;
-      console.log('Captcha passed!');
+      console.log('Captcha passed!')
+
     } else {
-      captchaVerified.value = false;
-      console.log('Captcha failed!');
+      console.warn('Captcha failed')
     }
   } catch (error) {
-    console.error('Ошибка при проверке капчи:', error);
+    console.error('Ошибка при проверке капчи:', error)
   }
-};
+}
 </script>
 
 <template>
@@ -51,37 +56,34 @@ const verifyCaptcha = async (response) => {
         </p>
       </div>
 
-      <form class="mt-6 space-y-4">
+      <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <div>
           <label for="email" class="label-text">Email</label>
-          <input type="email" id="email" class="input input-bordered w-full" required />
+          <input v-model="email" type="email" id="email" class="input input-bordered w-full" required/>
         </div>
 
         <div>
           <label for="password" class="label-text">Пароль</label>
-          <input type="password" id="password" class="input input-bordered w-full" required />
+          <input v-model="password" type="password" id="password" class="input input-bordered w-full" required/>
         </div>
 
         <div>
           <label for="confirm" class="label-text">Подтвердите пароль</label>
-          <input type="password" id="confirm" class="input input-bordered w-full" required />
+          <input v-model="confirm" type="password" id="confirm" class="input input-bordered w-full" required/>
         </div>
+
+        <!-- SmartCaptcha -->
+        <YandexCaptcha @verified="onCaptchaVerified"/>
 
         <div class="form-control">
           <label class="cursor-pointer label">
-            <input type="checkbox" class="checkbox checkbox-primary" required />
+            <input v-model="accepted" type="checkbox" class="checkbox checkbox-primary" required/>
             <span class="label-text ms-2">
               Я принимаю <a href="#" class="link link-primary">условия обработки данных</a>
             </span>
           </label>
         </div>
-        <!-- Капча -->
-        <div>
-          <VueReCaptcha
-              :sitekey="captchaKey"
-              @verify="onCaptchaVerified"
-          />
-        </div>
+
         <button type="submit" class="btn btn-primary w-full">Зарегистрироваться</button>
       </form>
     </div>

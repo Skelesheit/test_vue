@@ -12,7 +12,6 @@
     "lucide-vue-next": "^0.525.0",
     "vue": "^3.5.17",
     "vue-i18n": "^11.1.7",
-    "vue-recaptcha-v3": "^2.0.1",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

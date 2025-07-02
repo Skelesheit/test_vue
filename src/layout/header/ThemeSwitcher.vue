@@ -1,17 +1,25 @@
 <script setup>
-import {Sun, Moon} from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+import { Sun, Moon } from 'lucide-vue-next'
+
+const currentTheme = ref('neurop-light')
+
+function toggleTheme() {
+  currentTheme.value =
+      currentTheme.value === 'neurop-light' ? 'neurop-dark' : 'neurop-light'
+  document.documentElement.setAttribute('data-theme', currentTheme.value)
+  localStorage.setItem('theme', currentTheme.value)
+}
+
+onMounted(() => {
+  const saved = localStorage.getItem('theme') || 'neurop-light'
+  currentTheme.value = saved
+  document.documentElement.setAttribute('data-theme', saved)
+})
 </script>
 
 <template>
-  <label class="swap swap-rotate cursor-pointer">
-    <input type="checkbox"
-           class="theme-controller hidden"
-           data-toggle-theme="neurop-dark,neurop-light"
-           data-act-class="ACTIVE" />
-    <!-- Светлая иконка -->
-    <Sun class="swap-off w-6 h-6 text-warning" />
-    <!-- Тёмная иконка -->
-    <Moon class="swap-on w-6 h-6 text-primary" />
-  </label>
+  <button class="btn btn-sm btn-ghost" @click="toggleTheme">
+    <component :is="currentTheme === 'neurop-dark' ? Sun : Moon" class="w-5 h-5" />
+  </button>
 </template>
-

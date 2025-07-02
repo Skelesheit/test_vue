@@ -4,7 +4,7 @@ import Footer from "@/layout/footer/Footer.vue"
 </script>
 
 <template>
-  <div class="min-h-screen w-full flex flex-col gap-4 bg-base-100 text-base-content">
+  <div class="transition-colors duration-300 min-h-screen w-full flex flex-col gap-4 bg-base-100 text-base-content">
     <header class="navbar bg-base-200 shadow px-4">
       <Header />
     </header>
