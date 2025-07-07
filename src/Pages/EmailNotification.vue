@@ -15,7 +15,7 @@ function getMailService(email) {
   if (domain.includes('mail.ru')) return 'https://e.mail.ru/inbox'
   if (domain.includes('gmail')) return 'https://mail.google.com'
   if (domain.includes('outlook') || domain.includes('hotmail')) return 'https://outlook.live.com/mail/'
-  return 'https://your-email-provider.com'
+  return 'https://mail.google.com'
 }
 
 const mailLink = computed(() => getMailService(email.value))

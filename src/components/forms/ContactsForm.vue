@@ -1,7 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 const props = defineProps(['contact'])
 const emit = defineEmits(['update:contact'])
-import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
@@ -19,23 +20,43 @@ function update(field, value) {
         <label class="label">
           <span class="label-text">{{ t('form.city') }}</span>
         </label>
-        <input :value="contact.city" @input="update('city', $event.target.value)" :placeholder="t('form.city')" class="input input-bordered w-full" />
+        <input
+            name="city"
+            type="text"
+            :value="contact.city"
+            @input="update('city', $event.target.value)"
+            :placeholder="t('form.city')"
+            class="input input-bordered w-full"
+        />
       </div>
 
       <div class="form-control w-full">
         <label class="label">
           <span class="label-text">{{ t('form.address') }}</span>
         </label>
-        <input :value="contact.address" @input="update('address', $event.target.value)" :placeholder="t('form.address')" class="input input-bordered w-full" />
+        <input
+            name="address"
+            type="text"
+            :value="contact.address"
+            @input="update('address', $event.target.value)"
+            :placeholder="t('form.address')"
+            class="input input-bordered w-full"
+        />
       </div>
 
       <div class="form-control w-full">
         <label class="label">
-            <span class="label-text">{{ t('form.phone') }}</span>
+          <span class="label-text">{{ t('form.phone') }}</span>
         </label>
-        <input :value="contact.phone" @input="update('phone', $event.target.value)" :placeholder="t('form.phone')" class="input input-bordered w-full" />
+        <input
+            name="phone"
+            type="tel"
+            :value="contact.phone"
+            @input="update('phone', $event.target.value)"
+            :placeholder="t('form.phone')"
+            class="input input-bordered w-full"
+        />
       </div>
-
     </div>
   </div>
 </template>

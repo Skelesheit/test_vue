@@ -1,51 +1,141 @@
 <script setup>
 import { ref } from 'vue'
-import ChooseForm from '@/components/forms/ChooseForm.vue'
-import IndividualForm from '@/components/forms/IndividualForm.vue'
-import ContactsForm from '@/components/forms/ContactsForm.vue'
-import LegalForm from '@/components/forms/LegalForm.vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { api } from '@/services/api'
+import LegalForm from "@/components/forms/LegalForm.vue";
+import IndividualForm from "@/components/forms/IndividualForm.vue";
+import ContactsForm from "@/components/forms/ContactsForm.vue";
+import ChooseForm from "@/components/forms/ChooseForm.vue";
 
-import {useI18n} from "vue-i18n"
+// локализация и роутинг
+const { t } = useI18n()
+const router = useRouter()
 
-const {t} = useI18n()
-
+// тип пользователя
 const userType = ref('individual')
 
+// данные для физ. лица
 const individual = ref({
   last_name: '',
   first_name: '',
   patronymic: '',
 })
 
+// контактные данные (для физлица)
 const contact = ref({
   city: '',
   adress: '',
   phone: '',
 })
+
+// данные для юр. лиц и ИП
+const legal = ref({
+  inn: '',
+  ogrn: '',
+  managment_name: '',
+})
+
+const profileLegal = ref({
+  org_name: '',
+  kpp: '',
+  opf_full: '',
+  opf_short: '',
+})
+
+const legalContact = ref({
+  city: '',
+  adress: '',
+  phone: '',
+})
+
+// состояния загрузки и ошибки
+const isLoading = ref(false)
+const errorMessage = ref(null)
+
+// отправка формы
+const onSubmit = async () => {
+  isLoading.value = true
+  errorMessage.value = null
+
+  try {
+    const payload = {
+      user_type: userType.value,
+      contact: contact.value,
+    }
+
+    if (userType.value === 'individual') {
+      payload.individual = individual.value
+    } else {
+      payload.legal = legal.value
+      payload.profile_legal = profileLegal.value
+    }
+
+    const res = await api.fillData(payload)
+
+    if (res.ok) {
+      await router.push('/all-ok')
+    } else {
+      const error = await res.json()
+      console.error('Ошибка при отправке формы:', error)
+      errorMessage.value = error.message || 'Ошибка при отправке данных'
+    }
+  } catch (err) {
+    console.error('Ошибка сети:', err)
+    errorMessage.value = 'Сервер не отвечает'
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
+
 
 <template>
   <div class="flex flex-col mx-auto gap-4 w-full max-w-xl">
-    <ChooseForm class="w-full" v-model="userType" />
-    <ContactsForm class="w-full" v-model:contact="contact" />
 
+    <!-- Выбор типа пользователя -->
+    <ChooseForm class="w-full" v-model="userType" />
+
+    <!-- Контактная форма -->
+    <ContactsForm
+        class="w-full"
+        v-model:contact="contact"
+    />
+
+
+    <!-- Для физлица -->
     <IndividualForm
         class="w-full"
         v-if="userType === 'individual'"
         v-model:individual="individual"
     />
 
+    <!-- Для ИП и юр. лиц -->
     <LegalForm
         class="w-full"
         v-if="userType === 'legal' || userType === 'ip'"
         :userType="userType"
+        v-model:legal="legal"
+        v-model:profileLegal="profileLegal"
+        v-model:contact="contact"
     />
 
-    <div class="flex flex-row justify-between">
-      <button class="btn btn-error">{{ t('form.delete')}}</button>
-      <button class="btn btn-success">{{ t('form.create')}}</button>
+    <!-- Кнопки -->
+    <div class="flex flex-col gap-2 mt-4">
+      <div class="flex flex-row justify-between">
+        <button class="btn btn-error">{{ t('form.delete') }}</button>
+
+        <button @click="onSubmit" :disabled="isLoading" class="btn btn-success">
+          <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+          <span v-else>{{ t('form.create') }}</span>
+        </button>
+      </div>
+
+      <!-- Ошибка -->
+      <p v-if="errorMessage" class="text-error text-sm mt-2">{{ errorMessage }}</p>
     </div>
 
   </div>
 </template>
+
 

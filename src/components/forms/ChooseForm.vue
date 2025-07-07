@@ -1,13 +1,16 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
-import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const setValue = (val) => {
-  emit('update:modelValue', val)
-}
+const localValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 </script>
 
 <template>
@@ -17,38 +20,17 @@ const setValue = (val) => {
 
       <div class="flex flex-col gap-2">
         <label class="flex items-center gap-2 cursor-pointer">
-          <input
-              type="radio"
-              class="radio radio-warning"
-              name="userType"
-              value="individual"
-              :checked="modelValue === 'individual'"
-              @change="setValue('individual')"
-          />
+          <input type="radio" class="radio radio-warning" value="individual" v-model="localValue" />
           <span>{{ t('form.individual') }}</span>
         </label>
 
         <label class="flex items-center gap-2 cursor-pointer">
-          <input
-              type="radio"
-              class="radio radio-warning"
-              name="userType"
-              value="ip"
-              :checked="modelValue === 'ip'"
-              @change="setValue('ip')"
-          />
+          <input type="radio" class="radio radio-warning" value="ip" v-model="localValue" />
           <span>{{ t('form.ip') }}</span>
         </label>
 
         <label class="flex items-center gap-2 cursor-pointer">
-          <input
-              type="radio"
-              class="radio radio-warning"
-              name="userType"
-              value="legal"
-              :checked="modelValue === 'legal'"
-              @change="setValue('legal')"
-          />
+          <input type="radio" class="radio radio-warning" value="legal" v-model="localValue" />
           <span>{{ t('form.legal') }}</span>
         </label>
       </div>

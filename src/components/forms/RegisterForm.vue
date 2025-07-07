@@ -1,15 +1,21 @@
 <script setup>
 import {ref} from 'vue'
+import {useI18n} from 'vue-i18n'
+import {useRouter} from 'vue-router'
 import YandexCaptcha from '@/components/YandexCaptcha.vue'
-import {useI18n} from "vue-i18n";
 
 const {t} = useI18n()
+const router = useRouter()
+
 const email = ref('')
 const password = ref('')
 const confirm = ref('')
 const accepted = ref(false)
 const captchaToken = ref(null)
 const captchaVerified = ref(false)
+
+const isLoading = ref(false)
+const errorMessage = ref(null)
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
 
@@ -18,33 +24,55 @@ const onCaptchaVerified = (token) => {
 }
 
 const onSubmit = async () => {
+  errorMessage.value = null
+
   if (!captchaToken.value) {
-    alert(t('captcha_required'))
+    errorMessage.value = t('captcha_required')
     return
   }
 
+  if (password.value !== confirm.value) {
+    errorMessage.value = t('password_mismatch')
+    return
+  }
+
+  if (!accepted.value) {
+    errorMessage.value = t('must_accept_terms')
+    return
+  }
+
+  isLoading.value = true
+
   try {
-    const res = await fetch(`${apiUrl}/verify-captcha`, {
+    const res = await fetch(`${apiUrl}/user/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({captchaResponse: captchaToken.value}),
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+        captchaToken: captchaToken.value,
+      }),
     })
 
-    const result = await res.json()
-    captchaVerified.value = result.success
+    const data = await res.json()
 
-    if (result.success) {
-      console.log('Captcha passed!')
+    if (res.status === 201) {
+      console.log('Зарегистрирован:', data.message)
+      await router.push('/email-notify')
     } else {
-      console.warn('Captcha failed')
+      errorMessage.value = data.message || t('registration_failed')
     }
-  } catch (error) {
-    console.error(t('captcha_error'), error)
+  } catch (err) {
+    errorMessage.value = t('registration_failed')
+    console.error(err)
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
+
 
 <template>
   <div class="flex items-center justify-center bg-base-100">
@@ -87,6 +115,7 @@ const onSubmit = async () => {
         </div>
 
         <button type="submit" class="btn btn-primary w-full">{{ t('register_button') }}</button>
+        <p v-if="errorMessage" class="text-error text-sm">{{ errorMessage }}</p>
       </form>
     </div>
   </div>

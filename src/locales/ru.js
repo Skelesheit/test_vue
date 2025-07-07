@@ -6,6 +6,8 @@ export default {
     login_button: 'Войти',
     email: 'Электронная почта',
     email_placeholder: 'example@example.com',
+    password_mismatch: "Пароли не совпадают",
+    registration_failed: "Ошибка при регистрации",
     password: 'Пароль',
     confirm_password: 'Подтвердите пароль',
     show_password: 'Показать пароль',

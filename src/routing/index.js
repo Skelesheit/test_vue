@@ -1,4 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
+import End from "@/Pages/End.vue";
+import EmailConfirmed from "@/Pages/EmailConfirmed.vue";
 
 // Lazy-загрузка страниц
 const LoginPage = () => import('@/pages/Login.vue')
@@ -9,17 +11,22 @@ const EmailNotification = () => import('@/pages/EmailNotification.vue')
 const FillForm = () => import('@/pages/FillForm.vue')
 const routes = [
     {
-     path: '/',
-     component: Layout,
-     children: [
-         { path: '/', redirect: '/register' },
-         { path: '/login', component: LoginPage },
-         { path: '/register', component: RegisterPage },
-         { path: '/email-notify', component: EmailNotification },
-         { path: '/email-confirmed', component: EmailNotification },
-         { path: '/fill-form', component: FillForm },
-         { path: '/:pathMatch(.*)*', component: NotFound }, // 404
-     ]
+        path: '/',
+        component: Layout,
+        children: [
+            {path: '/', redirect: '/register'},
+            {path: '/login', component: LoginPage},
+            {path: '/register', component: RegisterPage},
+            {path: '/email-notify', component: EmailNotification},
+            {path: '/email-confirmed', component: EmailConfirmed},
+            {
+                path: '/fill-form',
+                component: FillForm,
+                meta: {requiresAuth: true}
+            },
+            {path: '/all-ok', component: End},
+            {path: '/:pathMatch(.*)*', component: NotFound}, // 404
+        ]
     }
 
 ]
