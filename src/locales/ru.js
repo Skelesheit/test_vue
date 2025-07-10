@@ -5,7 +5,9 @@ export default {
     login: 'Вход',
     login_button: 'Войти',
     email: 'Электронная почта',
-    email_placeholder: 'example@example.com',
+    // email_placeholder: 'exampl@example.com',
+    accept_terms: 'Я принимаю',
+    privacy_policy: 'условия использования',
     password_mismatch: "Пароли не совпадают",
     registration_failed: "Ошибка при регистрации",
     password: 'Пароль',
@@ -53,6 +55,10 @@ export default {
         },
         create: "Создать",
         delete: "Удалить"
-    }
+    },
+    "cookies": {
+        "message": "Этот сайт использует куки-файлы для корректной работы. Продолжая пользоваться сайтом, вы соглашаетесь с их использованием.",
+        "ok": "Ок, понял"
+    },
 
 }

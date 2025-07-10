@@ -20,17 +20,14 @@ const onCaptchaVerified = (token) => {
 }
 
 const onSubmit = async () => {
-  if (!captchaToken.value) {
+  /* if (!captchaToken.value) {
     errorMessage.value = t('captcha_required')
     return
-  }
-
+  } */
   isLoading.value = true
   errorMessage.value = null
-
   try {
     const response = await api.login(email.value, password.value)
-
     if (response.ok) {
       await router.push('/fill-form')  // редирект на success-страницу
     } else {
@@ -38,7 +35,7 @@ const onSubmit = async () => {
     }
   } catch (err) {
     console.error(err)
-    errorMessage.value = t('server_error')
+    errorMessage.value = err.message
   } finally {
     isLoading.value = false
   }
@@ -67,7 +64,7 @@ const onSubmit = async () => {
               type="email"
               id="email"
               class="input input-bordered w-full"
-              :placeholder="t('email_placeholder')"
+              placeholder="example@gmail.com"
               required
           />
         </div>
@@ -85,8 +82,9 @@ const onSubmit = async () => {
 
         </div>
 
-        <!-- Капча -->
+        <!-- Капча
         <YandexCaptcha @verified="onCaptchaVerified"/>
+        -->
 
         <!-- Сообщение об ошибке -->
         <p v-if="errorMessage" class="text-error text-sm">{{ errorMessage }}</p>

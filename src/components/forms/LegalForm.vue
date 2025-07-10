@@ -39,7 +39,7 @@ async function fetchDadata(inn) {
     const item = data || {}
 
     updateLegal('ogrn', item.ogrn || '')
-    updateLegal('managment_name', item.management?.name || '')
+    updateLegal('management_name', item.management?.name || '')
 
     updateProfile('org_name', item.name?.full_with_opf || '')
     updateProfile('kpp', item.kpp || '')
@@ -98,8 +98,8 @@ async function fetchDadata(inn) {
           </label>
           <input
               type="text"
-              :value="legal.managment_name"
-              @input="updateLegal('managment_name', $event.target.value)"
+              :value="legal.management_name"
+              @input="updateLegal('management_name', $event.target.value)"
               :placeholder="t('form.ip_fullname')"
               class="input input-bordered w-full"
           />
@@ -166,8 +166,8 @@ async function fetchDadata(inn) {
           </label>
           <input
               type="text"
-              :value="legal.managment_name"
-              @input="updateLegal('managment_name', $event.target.value)"
+              :value="legal.management_name"
+              @input="updateLegal('management_name', $event.target.value)"
               :placeholder="t('form.manager')"
               class="input input-bordered w-full"
           />

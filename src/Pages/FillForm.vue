@@ -25,7 +25,7 @@ const individual = ref({
 // контактные данные (для физлица)
 const contact = ref({
   city: '',
-  adress: '',
+  address: '',
   phone: '',
 })
 
@@ -33,7 +33,7 @@ const contact = ref({
 const legal = ref({
   inn: '',
   ogrn: '',
-  managment_name: '',
+  management_name: '',
 })
 
 const profileLegal = ref({
@@ -41,12 +41,6 @@ const profileLegal = ref({
   kpp: '',
   opf_full: '',
   opf_short: '',
-})
-
-const legalContact = ref({
-  city: '',
-  adress: '',
-  phone: '',
 })
 
 // состояния загрузки и ошибки
@@ -62,17 +56,26 @@ const onSubmit = async () => {
     const payload = {
       user_type: userType.value,
       contact: contact.value,
+      fill: {},
     }
-
-    if (userType.value === 'individual') {
-      payload.individual = individual.value
-    } else {
-      payload.legal = legal.value
-      payload.profile_legal = profileLegal.value
+    switch (userType.value) {
+      case 'individual':
+        payload.fill = individual.value;
+        payload.user_type='Физ. лицо';
+        break;
+      case 'legal':
+        payload.fill = legal.value;
+        payload.fill.legal_entity_profile = profileLegal.value;
+        payload.user_type='Юр. лицо';
+        break;
+      case 'ip':
+        payload.fill = legal.value;
+        payload.user_type='ИП';
+        break;
+      default:
+        throw new Error('Unknown user type');
     }
-
     const res = await api.fillData(payload)
-
     if (res.ok) {
       await router.push('/all-ok')
     } else {
@@ -92,24 +95,19 @@ const onSubmit = async () => {
 
 <template>
   <div class="flex flex-col mx-auto gap-4 w-full max-w-xl">
-
     <!-- Выбор типа пользователя -->
     <ChooseForm class="w-full" v-model="userType" />
-
     <!-- Контактная форма -->
     <ContactsForm
         class="w-full"
         v-model:contact="contact"
     />
-
-
     <!-- Для физлица -->
     <IndividualForm
         class="w-full"
         v-if="userType === 'individual'"
         v-model:individual="individual"
     />
-
     <!-- Для ИП и юр. лиц -->
     <LegalForm
         class="w-full"
@@ -119,22 +117,18 @@ const onSubmit = async () => {
         v-model:profileLegal="profileLegal"
         v-model:contact="contact"
     />
-
     <!-- Кнопки -->
     <div class="flex flex-col gap-2 mt-4">
       <div class="flex flex-row justify-between">
         <button class="btn btn-error">{{ t('form.delete') }}</button>
-
         <button @click="onSubmit" :disabled="isLoading" class="btn btn-success">
           <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
           <span v-else>{{ t('form.create') }}</span>
         </button>
       </div>
-
       <!-- Ошибка -->
       <p v-if="errorMessage" class="text-error text-sm mt-2">{{ errorMessage }}</p>
     </div>
-
   </div>
 </template>
 

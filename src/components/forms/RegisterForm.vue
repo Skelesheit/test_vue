@@ -3,6 +3,7 @@ import {ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useRouter} from 'vue-router'
 import YandexCaptcha from '@/components/YandexCaptcha.vue'
+import {api} from "@/services/api.js";
 
 const {t} = useI18n()
 const router = useRouter()
@@ -44,22 +45,17 @@ const onSubmit = async () => {
   isLoading.value = true
 
   try {
-    const res = await fetch(`${apiUrl}/user/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-        captchaToken: captchaToken.value,
-      }),
-    })
+    const res = await api.register(email.value, password.value, captchaToken.value)
+    let data = {}
 
-    const data = await res.json()
+    try {
+      data = await res.json?.() || res.data || {} // поддержка и fetch, и обёртки
+    } catch (e) {
+      data = res.data || {}
+    }
 
-    if (res.status === 201) {
-      console.log('Зарегистрирован:', data.message)
+    // Можно добавить обработку 201/200, если сервер меняет статус
+    if (res.ok || res.status === 201) {
       await router.push('/email-notify')
     } else {
       errorMessage.value = data.message || t('registration_failed')
@@ -88,7 +84,7 @@ const onSubmit = async () => {
       <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <div>
           <label for="email" type="email" class="label-text">{{ t('email') }}</label>
-          <input v-model="email" type="email" id="email" class="input input-bordered w-full" required />
+          <input v-model="email" placeholder="example@gmail.com" type="email" id="email" class="input input-bordered w-full" required />
         </div>
 
         <div>
@@ -109,7 +105,7 @@ const onSubmit = async () => {
             <input v-model="accepted" type="checkbox" class="checkbox checkbox-primary" required />
             <span class="label-text ms-2">
               {{ t('accept_terms') }}
-              <a href="#" class="link link-primary">{{ t('privacy_policy') }}</a>
+              <a href="https://neuro-master.tech/privacypolicy" class="link link-primary">{{ t('privacy_policy') }}</a>
             </span>
           </label>
         </div>

@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import End from "@/Pages/End.vue";
-import EmailConfirmed from "@/Pages/EmailConfirmed.vue";
+import {requireAuth} from '@/services/guard.js'
 
 // Lazy-загрузка страниц
 const LoginPage = () => import('@/pages/Login.vue')
@@ -9,6 +8,8 @@ const NotFound = () => import('@/pages/NotFound.vue')
 const Layout = () => import('@/layout/Layout.vue')
 const EmailNotification = () => import('@/pages/EmailNotification.vue')
 const FillForm = () => import('@/pages/FillForm.vue')
+const End = () => import('@/pages/End.vue')
+const EmailConfirmed = () => import('@/pages/EmailConfirmed.vue')
 const routes = [
     {
         path: '/',
@@ -24,14 +25,19 @@ const routes = [
                 component: FillForm,
                 meta: {requiresAuth: true}
             },
-            {path: '/all-ok', component: End},
+            {
+                path: '/all-ok',
+                component: End,
+                meta: {requiresAuth: true}
+            },
             {path: '/:pathMatch(.*)*', component: NotFound}, // 404
         ]
     }
-
 ]
 
 export const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+router.beforeEach(requireAuth)

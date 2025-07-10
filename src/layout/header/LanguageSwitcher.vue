@@ -8,6 +8,7 @@ const { locale } = useI18n()
 const savedLang = localStorage.getItem('lang')
 if (savedLang) {
   locale.value = savedLang
+
 }
 
 const selectedLang = computed({
@@ -15,9 +16,8 @@ const selectedLang = computed({
   set: (val) => {
     locale.value = val
     localStorage.setItem('lang', val)
-  }
+  },
 })
-
 </script>
 
 <template>

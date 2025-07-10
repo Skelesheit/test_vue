@@ -53,5 +53,9 @@ export default {
         errors: {
             inn_digits: 'INN must contain only 10–12 digits'
         }
+    },
+    "cookies": {
+        "message": "This site uses cookies to ensure you get the best experience. By continuing to use the site, you agree to our use of cookies.",
+        "ok": "OK, got it"
     }
 }

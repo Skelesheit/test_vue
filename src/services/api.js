@@ -1,25 +1,9 @@
-// src/services/api.js
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
-let accessToken = localStorage.getItem("accessToken");
-let refreshToken = localStorage.getItem("refreshToken");
-
-function setTokens(access, refresh) {
-    accessToken = access;
-    refreshToken = refresh;
-    localStorage.setItem("accessToken", access);
-    localStorage.setItem("refreshToken", refresh);
-}
-
-function clearTokens() {
-    accessToken = null;
-    refreshToken = null;
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-}
-
+// --- Обёртка для всех API-запросов ---
 async function request(endpoint, options = {}) {
     const headers = options.headers || {};
+    const accessToken = localStorage.getItem("accessToken");
 
     if (accessToken) {
         headers["Authorization"] = `Bearer ${accessToken}`;
@@ -31,36 +15,49 @@ async function request(endpoint, options = {}) {
             "Content-Type": "application/json",
             ...headers,
         },
+        credentials: "include", // всегда отправляем куки (refresh_token)
     });
 
-    if (response.status === 401 && refreshToken) {
-        const ok = await tryRefreshToken();
-        if (ok) return request(endpoint, options); // retry once
-        else clearTokens();
+    // Если access_token протух — пробуем обновить через refresh_token из куки
+    if (response.status === 401) {
+        const refreshed = await tryRefreshToken();
+        if (refreshed) {
+            // Повторяем запрос с новым токеном
+            return request(endpoint, options);
+        } else {
+            // Не смогли обновить — чистим токен
+            localStorage.removeItem("accessToken");
+        }
     }
 
     return response;
 }
 
+// --- Функция для получения нового access_token через refresh_token в куке ---
 async function tryRefreshToken() {
     const res = await fetch(`${API_URL}/auth/refresh`, {
         method: "POST",
-        headers: {
-            "Authorization": `Bearer ${refreshToken}`,
-        },
+        credentials: "include", // чтобы refresh_token отправился автоматически
     });
 
     if (!res.ok) return false;
 
-    const data = await res.json();
-    if (data.access && data.refresh) {
-        setTokens(data.access, data.refresh);
-        return true;
+    try {
+        const data = await res.json();
+        const access_token = data['access_token'];
+        if (access_token) {
+            localStorage.setItem("accessToken", access_token);
+            return true;
+        }
+    } catch (e) {
+        // Если вдруг ответ пустой/не JSON
+        return false;
     }
 
     return false;
 }
 
+// --- Экспортируемый api-объект ---
 export const api = {
     async login(email, password) {
         const res = await request("user/login", {
@@ -68,25 +65,23 @@ export const api = {
             body: JSON.stringify({ email, password }),
         });
 
-        const data = await res.json();
-        if (res.ok) setTokens(data.access, data.refresh);
-        return { ok: res.ok, data };
-    },
+        let data = {};
+        try {
+            data = await res.json();
+        } catch (e) {
+            // если сервер вернул пустой ответ
+            data = {};
+        }
 
-    async register(email, password, captchaToken) {
-        return await request("user/register", {
-            method: "POST",
-            body: JSON.stringify({ email, password, captchaToken }),
-        });
+        if (res.ok && data.access_token) {
+            localStorage.setItem("accessToken", data.access_token);
+        }
+        return { ok: res.ok, data };
     },
 
     async logout() {
         await request("auth/logout", { method: "POST" });
-        clearTokens();
-    },
-
-    async me() {
-        return await request("auth/me");
+        localStorage.removeItem("accessToken");
     },
 
     async fillData(payload) {
@@ -96,19 +91,26 @@ export const api = {
         });
     },
 
+    async me() {
+        return await request("auth/me");
+    },
+
+    async register(email, password, captchaToken) {
+        return await request("user/register", {
+            method: "POST",
+            body: JSON.stringify({ email, password, captchaToken }),
+        });
+    },
+
     async getDadataSuggest(inn) {
         return await request(`dadata/suggest/${inn}`);
     },
 
-    async confirmEmail(token) {
-        return await request(`mail/confirm/${token}`);
-    },
-
     getAccessToken() {
-        return accessToken;
+        return localStorage.getItem("accessToken");
     },
 
     isAuthorized() {
-        return Boolean(accessToken);
+        return !!localStorage.getItem("accessToken");
     }
 };
