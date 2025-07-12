@@ -17,7 +17,9 @@ async function request(endpoint, options = {}) {
         },
         credentials: "include", // всегда отправляем куки (refresh_token)
     });
-
+    if (options.noRetry) {
+        return response;
+    }
     // Если access_token протух — пробуем обновить через refresh_token из куки
     if (response.status === 401) {
         const refreshed = await tryRefreshToken();
@@ -91,8 +93,8 @@ export const api = {
         });
     },
 
-    async me() {
-        return await request("auth/me");
+    async me(noRetry = false) {
+        return await request("auth/me", {noRetry});
     },
 
     async register(email, password, captchaToken) {
@@ -110,7 +112,9 @@ export const api = {
         return localStorage.getItem("accessToken");
     },
 
-    isAuthorized() {
-        return !!localStorage.getItem("accessToken");
+    async isAuthorized() {
+        let res = await this.me(true);
+        console.log('[isAuthorized] response status:', res.status);
+        return res.ok;
     }
 };
