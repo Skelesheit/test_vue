@@ -7,6 +7,9 @@ export async function requireAuth(
     from: RouteLocationNormalized,
     next: NavigationGuardNext
 ): Promise<void> {
+    if (!to.matched.some(record => record.meta.requiresAuth)) {
+        return next()
+    }
     if (to.path === '/login') {
         return next()
     }

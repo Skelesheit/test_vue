@@ -1,28 +1,19 @@
-<script setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import { api } from '@/services/api.js'
+<script setup lang="ts">
+import {ref} from 'vue'
+import {useI18n} from 'vue-i18n'
+import {useRouter} from 'vue-router'
+import {api} from '@/services/api.js'
 
-const { t } = useI18n()
+const {t} = useI18n()
 const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-const showPassword = ref(false)
-const captchaToken = ref(null)
-const isLoading = ref(false)
-const errorMessage = ref(null)
-
-const onCaptchaVerified = (token) => {
-  captchaToken.value = token
-}
+const email = ref<string>('')
+const password = ref<string>('')
+const showPassword = ref<boolean>(false)
+const isLoading = ref<boolean>(false)
+const errorMessage = ref<string | null>(null)
 
 const onSubmit = async () => {
-  /* if (!captchaToken.value) {
-    errorMessage.value = t('captcha_required')
-    return
-  } */
   isLoading.value = true
   errorMessage.value = null
   try {
@@ -30,9 +21,9 @@ const onSubmit = async () => {
     if (response.ok) {
       await router.push('/fill-form')  // редирект на success-страницу
     } else {
-      errorMessage.value = response.data?.message || t('login_failed')
+      errorMessage.value = response.data?.message as string || t('login_failed')
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err)
     errorMessage.value = err.message
   } finally {
@@ -40,8 +31,6 @@ const onSubmit = async () => {
   }
 }
 </script>
-
-
 
 <template>
   <div class="flex items-center justify-center bg-base-100">
@@ -53,7 +42,6 @@ const onSubmit = async () => {
           <RouterLink class="text-primary hover:underline" to="/register">{{ t('register') }}</RouterLink>
         </p>
       </div>
-
       <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <!-- Email -->
         <div>
@@ -67,27 +55,16 @@ const onSubmit = async () => {
               required
           />
         </div>
-
         <!-- Password -->
         <div>
           <label for="password" class="label-text">{{ t('password') }}</label>
-
           <input
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               id="password"
               class="input input-bordered w-full pr-10"
               required/>
-
         </div>
-
-        <!-- Капча
-        <YandexCaptcha @verified="onCaptchaVerified"/>
-        -->
-
-        <!-- Сообщение об ошибке -->
-        <p v-if="errorMessage" class="text-error text-sm">{{ errorMessage }}</p>
-
         <!-- Кнопка отправки -->
         <button type="submit" class="btn btn-primary w-full" :disabled="isLoading">
           <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>

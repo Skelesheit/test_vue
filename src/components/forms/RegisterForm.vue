@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useRouter} from 'vue-router'
@@ -8,54 +8,44 @@ import {api} from "@/services/api.ts";
 const {t} = useI18n()
 const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-const confirm = ref('')
-const accepted = ref(false)
-const captchaToken = ref(null)
-const captchaVerified = ref(false)
+const email = ref<string>('')
+const password = ref<string>('')
+const confirm = ref<string>('')
+const accepted = ref<boolean>(false)
+const captchaToken = ref<string| null>(null)
+const captchaVerified = ref<boolean>(false)
+const isLoading = ref<boolean>(false)
+const errorMessage = ref<string | null>(null)
 
-const isLoading = ref(false)
-const errorMessage = ref(null)
-
-const apiUrl = import.meta.env.VITE_APP_API_URL
-
-const onCaptchaVerified = (token) => {
+const onCaptchaVerified = (token: string): void => {
   captchaToken.value = token
 }
 
-const onSubmit = async () => {
+const onSubmit = async (): Promise<void> => {
   errorMessage.value = null
-
   if (!captchaToken.value) {
     errorMessage.value = t('captcha_required')
     return
   }
-
   if (password.value !== confirm.value) {
     errorMessage.value = t('password_mismatch')
     return
   }
-
   if (!accepted.value) {
     errorMessage.value = t('must_accept_terms')
     return
   }
-
   isLoading.value = true
-
   try {
     const res = await api.register(email.value, password.value, captchaToken.value)
-    let data = {}
-
+    let data: any = {}
     try {
       data = await res.json?.() || res.data || {} // поддержка и fetch, и обёртки
     } catch (e) {
       data = res.data || {}
     }
-
     // Можно добавить обработку 201/200, если сервер меняет статус
-    if (res.ok || res.status === 201) {
+    if (res.ok) {
       await router.push('/email-notify')
     } else {
       errorMessage.value = data.message || t('registration_failed')
@@ -69,7 +59,6 @@ const onSubmit = async () => {
 }
 </script>
 
-
 <template>
   <div class="flex items-center justify-center bg-base-100">
     <div class="w-full max-w-md bg-base-200 rounded-xl shadow-lg p-6">
@@ -80,26 +69,21 @@ const onSubmit = async () => {
           <RouterLink class="text-primary hover:underline" to="/login">{{ t('login') }}</RouterLink>
         </p>
       </div>
-
       <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <div>
           <label for="email" type="email" class="label-text">{{ t('email') }}</label>
           <input v-model="email" placeholder="example@gmail.com" type="email" id="email" class="input input-bordered w-full" required />
         </div>
-
         <div>
           <label for="password" class="label-text">{{ t('password') }}</label>
           <input v-model="password" type="password" id="password" class="input input-bordered w-full" required />
         </div>
-
         <div>
           <label for="confirm" class="label-text">{{ t('confirm_password') }}</label>
           <input v-model="confirm" type="password" id="confirm" class="input input-bordered w-full" required />
         </div>
-
         <!-- SmartCaptcha -->
         <YandexCaptcha @verified="onCaptchaVerified" />
-
         <div class="form-control">
           <label class="cursor-pointer label">
             <input v-model="accepted" type="checkbox" class="checkbox checkbox-primary" required />
@@ -109,7 +93,6 @@ const onSubmit = async () => {
             </span>
           </label>
         </div>
-
         <button type="submit" class="btn btn-primary w-full">{{ t('register_button') }}</button>
         <p v-if="errorMessage" class="text-error text-sm">{{ errorMessage }}</p>
       </form>

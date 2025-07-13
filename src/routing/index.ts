@@ -18,7 +18,7 @@ const routes = [
             {path: '/', redirect: '/register'},
             {path: '/login', component: LoginPage},
             {path: '/register', component: RegisterPage},
-            {path: '/email-notify', component: EmailNotification},
+            { path: '/email-notify', component: EmailNotification},
             {path: '/email-confirmed', component: EmailConfirmed},
             {
                 path: '/fill-form',
