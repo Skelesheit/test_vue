@@ -4,7 +4,7 @@ import {computed} from 'vue'
 
 const { locale } = useI18n()
 
-// Инициализация из localStorage (можно оставить здесь или в main.js — но не в обоих!)
+// Инициализация из localStorage (можно оставить здесь или в main.ts — но не в обоих!)
 const savedLang = localStorage.getItem('lang')
 if (savedLang) {
   locale.value = savedLang

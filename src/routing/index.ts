@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {requireAuth} from '@/services/guard.js'
+import {requireAuth} from '@/services/guard'
 
 // Lazy-загрузка страниц
 const LoginPage = () => import('@/pages/Login.vue')

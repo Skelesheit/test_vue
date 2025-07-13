@@ -1,7 +1,7 @@
 <script setup>
 import {ref, watch} from 'vue'
 import { useI18n } from 'vue-i18n'
-import { api } from '@/services/api'
+import { api } from '@/services/api.js'
 
 const props = defineProps(['userType', 'legal', 'profileLegal', 'contact'])
 const emit = defineEmits(['update:legal', 'update:profileLegal', 'update:contact'])

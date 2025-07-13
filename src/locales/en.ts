@@ -1,4 +1,6 @@
-export default {
+import type { TranslationSchema } from './schema'
+
+const en: TranslationSchema = {
     welcome: 'Welcome',
     register: 'Sign up',
     register_button: 'Register',
@@ -10,6 +12,8 @@ export default {
     confirm_password: 'Confirm password',
     show_password: 'Show password',
     hide_password: 'Hide password',
+    password_mismatch: 'passwords do not match',
+    registration_failed: 'Registration failed',
     accept_terms: 'I accept the',
     privacy_policy: 'privacy policy',
     already_have_account: 'Already have an account?',
@@ -54,8 +58,11 @@ export default {
             inn_digits: 'INN must contain only 10–12 digits'
         }
     },
-    "cookies": {
-        "message": "This site uses cookies to ensure you get the best experience. By continuing to use the site, you agree to our use of cookies.",
-        "ok": "OK, got it"
+    cookies: {
+        message:
+            'This site uses cookies to ensure you get the best experience. By continuing to use the site, you agree to our use of cookies.',
+        ok: 'OK, got it'
     }
 }
+
+export default en

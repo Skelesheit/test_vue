@@ -3,7 +3,7 @@ import {ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useRouter} from 'vue-router'
 import YandexCaptcha from '@/components/YandexCaptcha.vue'
-import {api} from "@/services/api.js";
+import {api} from "@/services/api.ts";
 
 const {t} = useI18n()
 const router = useRouter()

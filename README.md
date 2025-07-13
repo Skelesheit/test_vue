@@ -62,9 +62,9 @@ test_vue/            # Vue 3 + Vite приложение
 │     ├── NotFound.vue # страница при неправильном маршруте 404
 │     ├── Register.vue # страница регистрации
 │   ├── services/ # API и сервисы (работа с backend, auth и т.п.)
-│     ├── api.js # методы для обращения к бекенду
+│     ├── api.ts # методы для обращения к бекенду
 │   ├── App.vue # стартовый компонент Vue
-│   └── main.js # стартовый скрипт для запуска Vue
+│   └── main.ts # стартовый скрипт для запуска Vue
 ├── index.html # стартовая страница
 ├── postcss.config.js # настройка postcss
 ├── vite.config.js # настройка vite

@@ -13,7 +13,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-// Ничего не нужно пока что...
-</script>

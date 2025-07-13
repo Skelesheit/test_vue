@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { api } from '@/services/api'
+import { api } from '@/services/api.js'
 import LegalForm from "@/components/forms/LegalForm.vue";
 import IndividualForm from "@/components/forms/IndividualForm.vue";
 import ContactsForm from "@/components/forms/ContactsForm.vue";
