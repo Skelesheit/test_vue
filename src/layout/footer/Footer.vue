@@ -13,7 +13,6 @@ import {RouterLink} from 'vue-router'
         <p><a href="mailto:info@neurop.ru" class="link link-primary">info@neurop.ru</a></p>
         <p class="mt-2 text-sm">Пн–Пт 9:00–18:00</p>
       </div>
-
       <!-- Навигация -->
       <div>
         <h3 class="font-semibold text-lg mb-2">Меню</h3>
@@ -35,7 +34,6 @@ import {RouterLink} from 'vue-router'
           </li>
         </ul>
       </div>
-
       <!-- Авторские права -->
       <div class="text-center md:text-right">
         <p class="text-sm">&copy; 2000–2025 ООО «Нейропроджект».</p>
@@ -44,9 +42,3 @@ import {RouterLink} from 'vue-router'
     </div>
   </footer>
 </template>
-
-<style scoped>
-footer a:hover {
-  text-decoration: underline;
-}
-</style>

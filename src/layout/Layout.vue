@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Header from "@/layout/header/Header.vue"
 import Footer from "@/layout/footer/Footer.vue"
 </script>
@@ -8,11 +8,9 @@ import Footer from "@/layout/footer/Footer.vue"
     <header class="navbar bg-base-200 shadow px-4">
       <Header />
     </header>
-
     <main class="flex-grow p-4">
       <RouterView />
     </main>
-
     <footer class="footer bg-base-200 p-4 text-sm text-center">
       <Footer />
     </footer>

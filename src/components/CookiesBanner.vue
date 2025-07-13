@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const showCookieBanner = ref(false)
+const showCookieBanner = ref<boolean>(false)
 const { t } = useI18n()
 
 onMounted(() => {
@@ -11,7 +11,7 @@ onMounted(() => {
   }
 })
 
-function acceptCookies() {
+function acceptCookies(): void {
   localStorage.setItem('cookieAccepted', 'yes')
   showCookieBanner.value = false
 }

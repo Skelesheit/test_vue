@@ -1,16 +1,30 @@
-<script setup>
+<script setup lang="ts">
 import {nextTick, onBeforeUnmount, onMounted, watch} from 'vue'
 import {useI18n} from "vue-i18n";
 
-const emit = defineEmits(['verified'])
+const emit = defineEmits<{
+  (event: 'verified', token: string): void
+}>()
 const {locale} = useI18n()
 const containerId = 'captcha-container'
+
+declare global {
+  interface Window {
+    smartCaptcha?: {
+      render: (containerId: string, options: {
+        sitekey: string
+        lang: string
+        callback: (token: string) => void
+      }) => void
+    }
+  }
+}
 
 function removeScript() {
   const oldScript = document.getElementById('smartcaptcha-script')
   if (oldScript) oldScript.remove()
 }
-function loadScript(lang, callback) {
+function loadScript(lang: string, callback: () => void) {
   const script = document.createElement('script')
   script.id = 'smartcaptcha-script'
   script.src = 'https://smartcaptcha.yandexcloud.net/captcha.js'
@@ -19,14 +33,13 @@ function loadScript(lang, callback) {
   document.body.appendChild(script)
 }
 
-
 function renderCaptcha() {
   if (!window.smartCaptcha) return
   const container = document.getElementById(containerId)
   if (container) container.innerHTML = ''
   window.smartCaptcha.render(containerId, {
     sitekey: import.meta.env.VITE_APP_YANDEX_CAPTCHA_KEY,
-    lang: 'en', // <-- текущий язык
+    lang: locale.value, // <-- текущий язык
     callback: (token) => emit('verified', token),
   })
 }
