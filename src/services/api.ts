@@ -1,4 +1,4 @@
-import {FillDataPayload, LoginResponse, RegisterPayload, RequestOptions} from './interfaces'
+import {DadataOrganization, FillDataPayload, LoginResponse, RegisterPayload, RequestOptions} from './interfaces'
 
 const API_URL = import.meta.env.VITE_APP_API_URL
 
@@ -97,8 +97,10 @@ export const api = {
         })
     },
 
-    async getDadataSuggest(inn: string): Promise<Response> {
-        return await request(`dadata/suggest/${inn}`)
+    async getDadataSuggest(inn: string): Promise<DadataOrganization> {
+        const res =  await request(`dadata/suggest/${inn}`)
+        if (!res.ok) throw new Error('Ошибка при запросе Dadata')
+        return await res.json()
     },
 
     async isAuthorized(): Promise<boolean> {

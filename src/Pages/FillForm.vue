@@ -1,42 +1,50 @@
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { api } from '@/services/api.js'
+<script setup lang="ts">
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {useI18n} from 'vue-i18n'
+import {api} from '@/services/api.js'
 import LegalForm from "@/components/forms/LegalForm.vue";
 import IndividualForm from "@/components/forms/IndividualForm.vue";
 import ContactsForm from "@/components/forms/ContactsForm.vue";
 import ChooseForm from "@/components/forms/ChooseForm.vue";
+import {UserType} from "@/services/enums.js";
+import {
+  ContactPayload,
+  IndividualPayload,
+  LegalPayload,
+  LegalEntityPayload,
+  FillDataPayload
+} from '@/services/interfaces'
 
 // локализация и роутинг
-const { t } = useI18n()
+const {t} = useI18n()
 const router = useRouter()
 
 // тип пользователя
-const userType = ref('individual')
-
-// данные для физ. лица
-const individual = ref({
-  last_name: '',
-  first_name: '',
-  patronymic: '',
-})
+const userType = ref<UserType>(UserType.Individual)
 
 // контактные данные (для физлица)
-const contact = ref({
+const contact = ref<ContactPayload>({
   city: '',
   address: '',
   phone: '',
 })
 
+// данные для физ. лица
+const individual = ref<IndividualPayload>({
+  last_name: '',
+  first_name: '',
+  patronymic: '',
+})
+
 // данные для юр. лиц и ИП
-const legal = ref({
+const legal = ref<LegalPayload>({
   inn: '',
   ogrn: '',
   management_name: '',
 })
 
-const profileLegal = ref({
+const profileLegal = ref<LegalEntityPayload>({
   org_name: '',
   kpp: '',
   opf_full: '',
@@ -44,39 +52,39 @@ const profileLegal = ref({
 })
 
 // состояния загрузки и ошибки
-const isLoading = ref(false)
-const errorMessage = ref(null)
+const isLoading = ref<boolean>(false)
+const errorMessage = ref<string | null>(null)
 
 // отправка формы
 const onSubmit = async () => {
   isLoading.value = true
   errorMessage.value = null
-
+  let fill_data: FillDataPayload['fill']
   try {
-    const payload = {
-      user_type: userType.value,
-      contact: contact.value,
-      fill: {},
-    }
     switch (userType.value) {
-      case 'individual':
-        payload.fill = individual.value;
-        payload.user_type='Физ. лицо';
+      case UserType.Individual:
+        fill_data = individual.value;
         break;
-      case 'legal':
-        payload.fill = legal.value;
-        payload.fill.legal_entity_profile = profileLegal.value;
-        payload.user_type='Юр. лицо';
+      case UserType.Legal:
+        fill_data = legal.value;
         break;
-      case 'ip':
-        payload.fill = legal.value;
-        payload.user_type='ИП';
+      case UserType.LegalEntity:
+        fill_data = {
+          ...legal.value,
+          legal_entity_profile: profileLegal.value
+        }
         break;
       default:
-        throw new Error('Unknown user type');
+        errorMessage.value = 'Неизвестный тип пользователя'
+        return
     }
-    const res = await api.fillData(payload)
-    if (res.ok) {
+    const payload: FillDataPayload = {
+      user_type: userType.value,
+      contact: contact.value,
+      fill: fill_data,
+    }
+     const res = await api.fillData(payload)
+    if (res.ok || res.status == 201) {
       await router.push('/all-ok')
     } else {
       const error = await res.json()
@@ -92,26 +100,22 @@ const onSubmit = async () => {
 }
 </script>
 
-
 <template>
   <div class="flex flex-col mx-auto gap-4 w-full max-w-xl">
     <!-- Выбор типа пользователя -->
-    <ChooseForm class="w-full" v-model="userType" />
+    <ChooseForm class="w-full" v-model="userType"/>
     <!-- Контактная форма -->
-    <ContactsForm
-        class="w-full"
-        v-model:contact="contact"
-    />
+    <ContactsForm class="w-full" v-model:contact="contact"/>
     <!-- Для физлица -->
     <IndividualForm
         class="w-full"
-        v-if="userType === 'individual'"
+        v-if="userType === UserType.Individual"
         v-model:individual="individual"
     />
     <!-- Для ИП и юр. лиц -->
     <LegalForm
         class="w-full"
-        v-if="userType === 'legal' || userType === 'ip'"
+        v-if="userType === UserType.Legal || userType === UserType.LegalEntity"
         :userType="userType"
         v-model:legal="legal"
         v-model:profileLegal="profileLegal"

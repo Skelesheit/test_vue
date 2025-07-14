@@ -21,6 +21,63 @@ export interface RegisterPayload {
     captchaToken: string
 }
 
-export interface FillDataPayload {
-    [key: string]: unknown // можешь позже заменить на конкретный интерфейс
+// types/dadata.ts
+export interface DadataOrganization {
+    ogrn?: string
+    inn?: string
+    kpp?: string
+    management?: {
+        name?: string
+    }
+    name?: {
+        full_with_opf?: string
+    }
+    opf?: {
+        full?: string
+        short?: string
+    }
+    address?: {
+        value?: string
+        data?: {
+            city?: string
+        }
+    }
 }
+
+
+
+export interface ContactPayload {
+    city: string
+    address: string
+    phone: string
+}
+
+export interface IndividualPayload {
+    last_name: string
+    first_name: string
+    patronymic: string
+}
+
+export interface LegalPayload {
+    inn: string
+    ogrn: string
+    management_name: string
+}
+
+export interface LegalEntityPayload {
+    org_name: string
+    kpp: string
+    opf_full: string
+    opf_short: string
+}
+
+// payload, который уходит на сервер
+export interface FillDataPayload {
+    user_type: UserType
+    contact: ContactFormData
+    fill: IndividualFormData | (
+        LegalFormData & {
+        legal_entity_profile?: LegalEntityProfileData
+    })
+}
+

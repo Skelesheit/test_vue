@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import {createRouter, createWebHistory, Router} from 'vue-router'
 import {requireAuth} from '@/services/guard'
 
 // Lazy-загрузка страниц
@@ -35,7 +35,7 @@ const routes = [
     }
 ]
 
-export const router = createRouter({
+export const router: Router = createRouter({
     history: createWebHistory(),
     routes,
 })

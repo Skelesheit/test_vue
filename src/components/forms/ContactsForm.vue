@@ -1,12 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-
-const props = defineProps(['contact'])
-const emit = defineEmits(['update:contact'])
+import {ContactPayload} from "@/services/interfaces";
 
 const { t } = useI18n()
 
-function update(field, value) {
+const props = defineProps<{contact: ContactPayload}>()
+const emit = defineEmits<{ (e: 'update:contact', value: ContactPayload): void }>()
+
+function update<K extends keyof ContactPayload>(field: K, value: ContactPayload[K]) {
   emit('update:contact', { ...props.contact, [field]: value })
 }
 </script>
@@ -15,7 +16,6 @@ function update(field, value) {
   <div class="card bg-base-100 shadow-md">
     <div class="card-body">
       <h2 class="card-title">{{ t('form.contacts') }}</h2>
-
       <div class="form-control w-full">
         <label class="label">
           <span class="label-text">{{ t('form.city') }}</span>
@@ -29,7 +29,6 @@ function update(field, value) {
             class="input input-bordered w-full"
         />
       </div>
-
       <div class="form-control w-full">
         <label class="label">
           <span class="label-text">{{ t('form.address') }}</span>
@@ -43,7 +42,6 @@ function update(field, value) {
             class="input input-bordered w-full"
         />
       </div>
-
       <div class="form-control w-full">
         <label class="label">
           <span class="label-text">{{ t('form.phone') }}</span>

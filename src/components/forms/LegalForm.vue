@@ -1,25 +1,38 @@
-<script setup>
+<script setup lang="ts">
 import {ref, watch} from 'vue'
-import { useI18n } from 'vue-i18n'
-import { api } from '@/services/api.js'
-
-const props = defineProps(['userType', 'legal', 'profileLegal', 'contact'])
-const emit = defineEmits(['update:legal', 'update:profileLegal', 'update:contact'])
+import {useI18n} from 'vue-i18n'
+import {api} from '@/services/api.js'
+import {UserType} from "@/services/enums";
+import {ContactPayload, LegalEntityPayload, LegalPayload} from "@/services/interfaces";
 
 const {t} = useI18n()
-const innError = ref('')
+
+const props = defineProps<{
+  userType: UserType
+  legal: LegalPayload
+  profileLegal: LegalEntityPayload
+  contact: ContactPayload
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:legal', value: LegalPayload): void
+  (e: 'update:profileLegal', value: LegalEntityPayload): void
+  (e: 'update:contact', value: ContactPayload): void
+}>()
+
+const innError = ref<string>('')
 
 // Обновление значений через emit
-function updateLegal(field, value) {
-  emit('update:legal', {...props.legal, [field]: value})
+function updateLegal<K extends keyof LegalPayload>(field: K, value: LegalPayload[K]) {
+  emit('update:legal', { ...props.legal, [field]: value })
 }
 
-function updateProfile(field, value) {
-  emit('update:profileLegal', {...props.profileLegal, [field]: value})
+function updateProfile<K extends keyof LegalEntityPayload>(field: K, value: LegalEntityPayload[K]) {
+  emit('update:profileLegal', { ...props.profileLegal, [field]: value })
 }
 
-function updateContact(field, value) {
-  emit('update:contact', {...props.contact, [field]: value})
+function updateContact<K extends keyof ContactPayload>(field: K, value: ContactPayload[K]) {
+  emit('update:contact', { ...props.contact, [field]: value })
 }
 
 // Автозаполнение по ИНН
@@ -32,35 +45,42 @@ watch(() => props.legal.inn, async (val) => {
   await fetchDadata(val)
 })
 
-async function fetchDadata(inn) {
+async function fetchDadata(inn: string) {
   try {
-    const response = await api.getDadataSuggest(inn)
-    const data = await response.json()
-    const item = data || {}
+    const result = await api.getDadataSuggest(inn)
+    const item = result?.suggestions?.[0]?.data
+    if (!item) {
+      console.warn('Dadata: пустые данные')
+      return
+    }
+    console.log('Dadata item:', item)
 
+    // legal
     updateLegal('ogrn', item.ogrn || '')
     updateLegal('management_name', item.management?.name || '')
 
+    // profileLegal
     updateProfile('org_name', item.name?.full_with_opf || '')
     updateProfile('kpp', item.kpp || '')
     updateProfile('opf_full', item.opf?.full || '')
     updateProfile('opf_short', item.opf?.short || '')
 
-    updateContact('city', item.address?.data?.city || '')
+    // contact
     updateContact('address', item.address?.value || '')
+    updateContact('city', item.address?.data?.city || '') // вот тут была часто ошибка
   } catch (e) {
-    console.error('Ошибка при запросе к бэкенду:', e)
+    console.error('Ошибка при запросе к Dadata:', e)
   }
 }
+
 </script>
 
 <template>
   <div class="card bg-base-100 shadow-md">
     <div class="card-body">
       <h2 class="card-title">
-        {{ userType === 'legal' ? t('form.legal_entity') : t('form.ip') }}
+        {{ userType === UserType.LegalEntity ? t('form.legal_entity') : t('form.ip') }}
       </h2>
-
       <!-- ИНН -->
       <div class="form-control w-full">
         <label class="label">
@@ -75,7 +95,6 @@ async function fetchDadata(inn) {
         />
         <span v-if="innError" class="text-error text-sm mt-1">{{ innError }}</span>
       </div>
-
       <!-- ОГРН -->
       <div class="form-control w-full">
         <label class="label">
@@ -89,9 +108,8 @@ async function fetchDadata(inn) {
             class="input input-bordered w-full"
         />
       </div>
-
       <!-- ИП -->
-      <template v-if="userType === 'ip'">
+      <template v-if="userType === UserType.Legal">
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.ip_fullname') }}</span>
@@ -105,7 +123,6 @@ async function fetchDadata(inn) {
           />
         </div>
       </template>
-
       <!-- Юр. лицо -->
       <template v-else>
         <div class="form-control w-full">
@@ -120,7 +137,6 @@ async function fetchDadata(inn) {
               class="input input-bordered w-full"
           />
         </div>
-
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.kpp') }}</span>
@@ -133,7 +149,6 @@ async function fetchDadata(inn) {
               class="input input-bordered w-full"
           />
         </div>
-
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.opf_full') }}</span>
@@ -146,7 +161,6 @@ async function fetchDadata(inn) {
               class="input input-bordered w-full"
           />
         </div>
-
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.opf_short') }}</span>
@@ -159,7 +173,6 @@ async function fetchDadata(inn) {
               class="input input-bordered w-full"
           />
         </div>
-
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.manager') }}</span>
@@ -173,34 +186,6 @@ async function fetchDadata(inn) {
           />
         </div>
       </template>
-
-      <div class="divider">{{ t('form.contacts') }}</div>
-
-      <div class="form-control w-full">
-        <label class="label">
-          <span class="label-text">{{ t('form.city') }}</span>
-        </label>
-        <input
-            type="text"
-            :value="contact.city"
-            @input="updateContact('city', $event.target.value)"
-            :placeholder="t('form.city')"
-            class="input input-bordered w-full"
-        />
-      </div>
-
-      <div class="form-control w-full">
-        <label class="label">
-          <span class="label-text">{{ t('form.address') }}</span>
-        </label>
-        <input
-            type="text"
-            :value="contact.address"
-            @input="updateContact('address', $event.target.value)"
-            :placeholder="t('form.address')"
-            class="input input-bordered w-full"
-        />
-      </div>
     </div>
   </div>
 </template>
