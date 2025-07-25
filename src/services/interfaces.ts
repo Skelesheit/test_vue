@@ -1,12 +1,13 @@
-// Типы для auth/login ответа
-
 // Универсальный тип для опций запроса
+import {EnterpriseType} from "@/services/enums";
+
 export interface RequestOptions extends RequestInit {
     noRetry?: boolean
 }
 
 export interface LoginResponse {
     access_token?: string
+
     [key: string]: unknown
 }
 
@@ -18,7 +19,7 @@ export interface LoginPayload {
 export interface RegisterPayload {
     email: string
     password: string
-    captchaToken: string
+    captcha: string
 }
 
 // types/dadata.ts
@@ -43,7 +44,6 @@ export interface DadataOrganization {
         }
     }
 }
-
 
 
 export interface ContactPayload {
@@ -71,13 +71,69 @@ export interface LegalEntityPayload {
     opf_short: string
 }
 
+export interface Contact {
+    phone: string
+    city: string
+    address: string
+}
+
+export interface IndividualProfile {
+    first_name: string
+    last_name: string
+    patronymic: string
+}
+
+export interface LegalEntityProfile {
+    org_name: string
+    kpp: string
+    opf_full: string
+    opf_short: string
+}
+
+export interface LegalEntity {
+    inn: string
+    ogrn: string
+    management_name: string
+    legal_entity_profile?: LegalEntityProfile
+}
+
+export interface EnterpriseMemberOut {
+    id: number
+    email: string
+    role: string
+    status: string
+}
+
+export interface EnterpriseResponse {
+    id: number
+    name: string
+    enterprise_type: string
+    contact?: Contact
+    individual_profile?: IndividualProfile
+    legal_entity?: LegalEntity
+    members: EnterpriseMemberOut[]
+}
+
+export interface InviteTokensResponse {
+    tokens: string[]
+}
+
+export interface JoinTokenIn {
+    inn: string
+    token: string
+}
+
 // payload, который уходит на сервер
 export interface FillDataPayload {
-    user_type: UserType
-    contact: ContactFormData
-    fill: IndividualFormData | (
-        LegalFormData & {
-        legal_entity_profile?: LegalEntityProfileData
-    })
+    name: string
+    enterprise_type: EnterpriseType
+    contact: ContactPayload
+    fill: IndividualPayload | (
+        LegalPayload & {
+        legal_entity_profile?: LegalEntityPayload
+        }
+    )
 }
+
+
 

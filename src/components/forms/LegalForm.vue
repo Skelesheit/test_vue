@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
-import {useI18n} from 'vue-i18n'
-import {api} from '@/services/api.js'
-import {UserType} from "@/services/enums";
-import {ContactPayload, LegalEntityPayload, LegalPayload} from "@/services/interfaces";
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { api } from '@/services/api.js'
+import { EnterpriseType } from "@/services/enums"
+import { ContactPayload, LegalEntityPayload, LegalPayload } from "@/services/interfaces"
 
-const {t} = useI18n()
+const { t } = useI18n()
 
 const props = defineProps<{
-  userType: UserType
+  enterprise_type: EnterpriseType
   legal: LegalPayload
   profileLegal: LegalEntityPayload
   contact: ContactPayload
@@ -67,20 +67,20 @@ async function fetchDadata(inn: string) {
 
     // contact
     updateContact('address', item.address?.value || '')
-    updateContact('city', item.address?.data?.city || '') // вот тут была часто ошибка
+    updateContact('city', item.address?.data?.city || '') // тут были ошибки
   } catch (e) {
     console.error('Ошибка при запросе к Dadata:', e)
   }
 }
-
 </script>
 
 <template>
   <div class="card bg-base-100 shadow-md">
     <div class="card-body">
       <h2 class="card-title">
-        {{ userType === UserType.LegalEntity ? t('form.legal_entity') : t('form.ip') }}
+        {{ enterprise_type === EnterpriseType.LegalEntity ? t('form.legal_entity') : t('form.ip') }}
       </h2>
+
       <!-- ИНН -->
       <div class="form-control w-full">
         <label class="label">
@@ -95,6 +95,7 @@ async function fetchDadata(inn: string) {
         />
         <span v-if="innError" class="text-error text-sm mt-1">{{ innError }}</span>
       </div>
+
       <!-- ОГРН -->
       <div class="form-control w-full">
         <label class="label">
@@ -108,8 +109,9 @@ async function fetchDadata(inn: string) {
             class="input input-bordered w-full"
         />
       </div>
+
       <!-- ИП -->
-      <template v-if="userType === UserType.Legal">
+      <template v-if="enterprise_type === EnterpriseType.Legal">
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.ip_fullname') }}</span>
@@ -123,6 +125,7 @@ async function fetchDadata(inn: string) {
           />
         </div>
       </template>
+
       <!-- Юр. лицо -->
       <template v-else>
         <div class="form-control w-full">
@@ -137,6 +140,7 @@ async function fetchDadata(inn: string) {
               class="input input-bordered w-full"
           />
         </div>
+
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.kpp') }}</span>
@@ -149,6 +153,7 @@ async function fetchDadata(inn: string) {
               class="input input-bordered w-full"
           />
         </div>
+
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.opf_full') }}</span>
@@ -161,6 +166,7 @@ async function fetchDadata(inn: string) {
               class="input input-bordered w-full"
           />
         </div>
+
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.opf_short') }}</span>
@@ -173,6 +179,7 @@ async function fetchDadata(inn: string) {
               class="input input-bordered w-full"
           />
         </div>
+
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">{{ t('form.manager') }}</span>

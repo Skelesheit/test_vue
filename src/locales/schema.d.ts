@@ -55,13 +55,88 @@ export interface TranslationSchema {
         phone: string
         create: string
         delete: string
+        back: string
         errors: {
             inn_digits: string
         }
+        edit: string
     }
 
     cookies: {
-        message: string
-        ok: string
+        message: string,
+        ok: string,
+    }
+
+    create_or_join: {
+        title: string,
+        join_title: string,
+        join_description: string,
+        create_title: string,
+        create_description: string,
+    },
+
+    join_form: {
+        inn: string,
+        token: string,
+        submit: string,
+        inn_invalid: string,
+        token_required: string,
+        back: string
+    },
+
+    join_success: {
+        title: string,
+        description: string,
+        go_to_profile: string
+    },
+
+    create_success: {
+        title: string,
+        description: string,
+        go_to_profile: string
+    },
+
+    company_name_form: {
+        company_name: string
+        company_name_placeholder: string
+        company_name_hint: string
+    },
+    personal_cabinet: {
+        title: string
+        profile: string
+        settings: {
+            title: string
+            transfer_owner: string
+            select_member: string
+            transfer: string
+            change_type: string
+            convert_to_ip: string
+            danger_zone: string
+            delete_company: string
+            edit: string
+        }
+        invite: {
+            title: string
+            by_email: string
+            by_token: string
+            send: string
+            token_count: string
+            generate: string
+            generated_tokens: string
+            copy: string
+        }
+        members: {
+            title: string
+            email: string
+            role: string
+            status: string
+            remove: string
+        }
+        actions: {
+            edit: string
+            delete: string
+            save: string
+            cancel: string
+        }
     }
 }

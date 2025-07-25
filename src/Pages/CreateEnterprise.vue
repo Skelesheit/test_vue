@@ -7,7 +7,7 @@ import LegalForm from "@/components/forms/LegalForm.vue";
 import IndividualForm from "@/components/forms/IndividualForm.vue";
 import ContactsForm from "@/components/forms/ContactsForm.vue";
 import ChooseForm from "@/components/forms/ChooseForm.vue";
-import {UserType} from "@/services/enums.js";
+import {EnterpriseType} from "@/services/enums.js";
 import {
   ContactPayload,
   IndividualPayload,
@@ -15,15 +15,19 @@ import {
   LegalEntityPayload,
   FillDataPayload
 } from '@/services/interfaces'
+import CompanyNameForm from "@/components/forms/CompanyNameForm.vue";
 
 // локализация и роутинг
 const {t} = useI18n()
 const router = useRouter()
 
 // тип пользователя
-const userType = ref<UserType>(UserType.Individual)
+const enterprise_type = ref<EnterpriseType>(EnterpriseType.Individual)
 
-// контактные данные (для физлица)
+// именование компании
+const companyName = ref<string>('')
+
+// контактные данные (для физ лица)
 const contact = ref<ContactPayload>({
   city: '',
   address: '',
@@ -51,6 +55,10 @@ const profileLegal = ref<LegalEntityPayload>({
   opf_short: '',
 })
 
+function goBack(): void {
+  router.push('/join-or-create')
+}
+
 // состояния загрузки и ошибки
 const isLoading = ref<boolean>(false)
 const errorMessage = ref<string | null>(null)
@@ -61,14 +69,14 @@ const onSubmit = async () => {
   errorMessage.value = null
   let fill_data: FillDataPayload['fill']
   try {
-    switch (userType.value) {
-      case UserType.Individual:
+    switch (enterprise_type.value) {
+      case EnterpriseType.Individual:
         fill_data = individual.value;
         break;
-      case UserType.Legal:
+      case EnterpriseType.Legal:
         fill_data = legal.value;
         break;
-      case UserType.LegalEntity:
+      case EnterpriseType.LegalEntity:
         fill_data = {
           ...legal.value,
           legal_entity_profile: profileLegal.value
@@ -79,13 +87,14 @@ const onSubmit = async () => {
         return
     }
     const payload: FillDataPayload = {
-      user_type: userType.value,
+      enterprise_type: enterprise_type.value,
+      name: companyName.value,
       contact: contact.value,
       fill: fill_data,
     }
      const res = await api.fillData(payload)
     if (res.ok || res.status == 201) {
-      await router.push('/all-ok')
+      await router.push('/success-to-create')
     } else {
       const error = await res.json()
       console.error('Ошибка при отправке формы:', error)
@@ -102,21 +111,23 @@ const onSubmit = async () => {
 
 <template>
   <div class="flex flex-col mx-auto gap-4 w-full max-w-xl">
+    <!-- Наименование компании -->
+    <CompanyNameForm v-model="companyName" />
     <!-- Выбор типа пользователя -->
-    <ChooseForm class="w-full" v-model="userType"/>
+    <ChooseForm class="w-full" v-model="enterprise_type"/>
     <!-- Контактная форма -->
     <ContactsForm class="w-full" v-model:contact="contact"/>
-    <!-- Для физлица -->
+    <!-- Для физ. лица -->
     <IndividualForm
         class="w-full"
-        v-if="userType === UserType.Individual"
+        v-if="enterprise_type === EnterpriseType.Individual"
         v-model:individual="individual"
     />
     <!-- Для ИП и юр. лиц -->
     <LegalForm
         class="w-full"
-        v-if="userType === UserType.Legal || userType === UserType.LegalEntity"
-        :userType="userType"
+        v-if="enterprise_type === EnterpriseType.Legal || enterprise_type === EnterpriseType.LegalEntity"
+        :enterprise_type="enterprise_type"
         v-model:legal="legal"
         v-model:profileLegal="profileLegal"
         v-model:contact="contact"
@@ -124,7 +135,7 @@ const onSubmit = async () => {
     <!-- Кнопки -->
     <div class="flex flex-col gap-2 mt-4">
       <div class="flex flex-row justify-between">
-        <button class="btn btn-error">{{ t('form.delete') }}</button>
+        <button @click="goBack" class="btn btn-error">{{ t('form.back') }}</button>
         <button @click="onSubmit" :disabled="isLoading" class="btn btn-success">
           <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
           <span v-else>{{ t('form.create') }}</span>

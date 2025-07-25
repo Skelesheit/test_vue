@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import {computed} from 'vue'
-import {useI18n} from 'vue-i18n'
-import {UserType} from '@/services/enums.js'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { EnterpriseType } from '@/services/enums'
 
-const {t} = useI18n()
+const { t } = useI18n()
 
-const props = defineProps<{ modelValue: UserType }>()
-const emit = defineEmits<{ (e: 'update:modelValue', value: UserType): void }>()
+// именно enterprise_type в пропсах
+const props = defineProps<{ modelValue: EnterpriseType }>()
+const emit = defineEmits<{ (e: 'update:modelValue', value: EnterpriseType): void }>()
 
 const localValue = computed({
-  get: () => props.userType,
+  get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
 </script>
@@ -22,9 +23,9 @@ const localValue = computed({
         <label class="flex items-center gap-2 cursor-pointer">
           <input
               type="radio"
-              name="userType"
+              name="enterprise_type"
               class="radio radio-warning"
-              :value="UserType.Individual"
+              :value="EnterpriseType.Individual"
               v-model="localValue"
           />
           <span>{{ t('form.individual') }}</span>
@@ -32,9 +33,9 @@ const localValue = computed({
         <label class="flex items-center gap-2 cursor-pointer">
           <input
               type="radio"
-              name="userType"
+              name="enterprise_type"
               class="radio radio-warning"
-              :value="UserType.Legal"
+              :value="EnterpriseType.Legal"
               v-model="localValue"
           />
           <span>{{ t('form.ip') }}</span>
@@ -42,9 +43,9 @@ const localValue = computed({
         <label class="flex items-center gap-2 cursor-pointer">
           <input
               type="radio"
-              name="userType"
+              name="enterprise_type"
               class="radio radio-warning"
-              :value="UserType.LegalEntity"
+              :value="EnterpriseType.LegalEntity"
               v-model="localValue"
           />
           <span>{{ t('form.legal') }}</span>
@@ -53,4 +54,3 @@ const localValue = computed({
     </div>
   </div>
 </template>
-

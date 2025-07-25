@@ -1,15 +1,20 @@
 import {createRouter, createWebHistory, Router} from 'vue-router'
 import {requireAuth} from '@/services/guard'
+import Personal from "@/Pages/Personal.vue";
 
 // Lazy-загрузка страниц
-const LoginPage = () => import('@/pages/Login.vue')
-const RegisterPage = () => import('@/pages/Register.vue')
-const NotFound = () => import('@/pages/NotFound.vue')
+const SuccessCreate = () => import("@/Pages/SuccessCreate.vue")
+const SuccessJoin =() => import("@/Pages/SuccessCreate.vue")
+const JoinEnterprise = () => import("@/Pages/JoinEnterprise.vue")
+const JoinOrCreate = () => import('@/Pages/JoinOrCreate.vue')
+const CreateEnterprise = () => import("@/Pages/CreateEnterprise.vue");
+const LoginPage = () => import('@/Pages/Login.vue')
+const RegisterPage = () => import('@/Pages/Register.vue')
+const NotFound = () => import('@/Pages/NotFound.vue')
 const Layout = () => import('@/layout/Layout.vue')
-const EmailNotification = () => import('@/pages/EmailNotification.vue')
-const FillForm = () => import('@/pages/FillForm.vue')
-const End = () => import('@/pages/End.vue')
-const EmailConfirmed = () => import('@/pages/EmailConfirmed.vue')
+const EmailNotification = () => import('@/Pages/EmailNotification.vue')
+const End = () => import('@/Pages/End.vue')
+const EmailConfirmed = () => import('@/Pages/EmailConfirmed.vue')
 const routes = [
     {
         path: '/',
@@ -18,13 +23,39 @@ const routes = [
             {path: '/', redirect: '/register'},
             {path: '/login', component: LoginPage},
             {path: '/register', component: RegisterPage},
-            { path: '/email-notify', component: EmailNotification},
+            {path: '/email-notify', component: EmailNotification},
             {path: '/email-confirmed', component: EmailConfirmed},
             {
-                path: '/fill-form',
-                component: FillForm,
+                path: '/join-or-create',
+                component: JoinOrCreate,
+                meta: {requireAuth: true},
+            },
+            {
+              path: '/success-to-create',
+              component: SuccessCreate,
+              meta: {requireAuth: true},
+            },
+            {
+                path: '/success-to-join',
+                component: SuccessJoin,
+                meta: {requireAuth: true},
+            },
+            {
+                path: '/join-to-company',
+                component: JoinEnterprise,
+                meta: {requireAuth: true},
+            },
+            {
+                path: '/create-enterprise',
+                component: CreateEnterprise,
                 meta: {requiresAuth: true}
             },
+            {
+                path: '/personal',
+                component: Personal,
+                meta: {requireAuth: true}
+            },
+
             {
                 path: '/all-ok',
                 component: End,

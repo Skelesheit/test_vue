@@ -8,7 +8,7 @@ export enum Language {
     English = 'en',
 }
 
-export enum UserType {
+export enum EnterpriseType {
     Individual = 'Физ. лицо',
     Legal = 'ИП',
     LegalEntity = 'Юр. лицо'

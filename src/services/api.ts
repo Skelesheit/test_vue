@@ -1,4 +1,13 @@
-import {DadataOrganization, FillDataPayload, LoginResponse, RegisterPayload, RequestOptions} from './interfaces'
+import {
+    DadataOrganization,
+    EnterpriseResponse,
+    FillDataPayload,
+    InviteTokensResponse,
+    JoinTokenIn,
+    LoginResponse,
+    RegisterPayload,
+    RequestOptions
+} from './interfaces'
 
 const API_URL = import.meta.env.VITE_APP_API_URL
 
@@ -11,6 +20,7 @@ async function request(endpoint: string, options: RequestOptions = {}): Promise<
     if (accessToken) {
         headers['Authorization'] = `Bearer ${accessToken}`
     }
+    console.log(`endpoint: ${API_URL}/${endpoint}`)
     const response = await fetch(`${API_URL}/${endpoint}`, {
         ...options,
         headers: {
@@ -79,7 +89,7 @@ export const api = {
     },
 
     async fillData(payload: FillDataPayload): Promise<Response> {
-        return await request('user/fill-data', {
+        return await request('enterprise/create', {
             method: 'POST',
             body: JSON.stringify(payload)
         })
@@ -89,8 +99,8 @@ export const api = {
         return await request('auth/me', {noRetry})
     },
 
-    async register(email: string, password: string, captchaToken: string): Promise<Response> {
-        const payload: RegisterPayload = {email, password, captchaToken}
+    async register(email: string, password: string, captcha: string): Promise<Response> {
+        const payload: RegisterPayload = {email, password, captcha}
         return await request('user/register', {
             method: 'POST',
             body: JSON.stringify(payload)
@@ -101,6 +111,38 @@ export const api = {
         const res =  await request(`dadata/suggest/${inn}`)
         if (!res.ok) throw new Error('Ошибка при запросе Dadata')
         return await res.json()
+    },
+    async getEnterprise(): Promise<EnterpriseResponse> {
+        const res = await request('enterprise/personal')
+        if (!res.ok) throw new Error('Ошибка получения данных компании')
+        return await res.json()
+    },
+
+    async generateTokens(count: number): Promise<InviteTokensResponse> {
+        const res = await request(`enterprise/generate-tokens/${count}`)
+        if (!res.ok) throw new Error('Ошибка генерации токенов')
+        return await res.json()
+    },
+
+    async joinToCompany(data: JoinTokenIn): Promise<{ ok: boolean; message?: string }> {
+        const res = await request('enterprise/join-to-company', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+        if (!res.ok) {
+            const msg = await res.text()
+            return { ok: false, message: msg }
+        }
+        return { ok: true }
+    },
+
+    async inviteByEmail(email: string): Promise<{ ok: boolean; message?: string }> {
+        const res = await request(`enterprise/invite-by-email?email=${encodeURIComponent(email)}`)
+        if (!res.ok) {
+            const msg = await res.text()
+            return { ok: false, message: msg }
+        }
+        return { ok: true }
     },
 
     async isAuthorized(): Promise<boolean> {

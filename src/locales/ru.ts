@@ -59,13 +59,84 @@ const ru: TranslationSchema = {
         delete: 'Удалить',
         errors: {
             inn_digits: 'ИНН должен содержать только 10–12 цифр'
-        }
+        },
+        back: 'Назад',
+        edit: 'Редактировать'
     },
 
     cookies: {
         message:
             'Этот сайт использует куки-файлы для корректной работы. Продолжая пользоваться сайтом, вы соглашаетесь с их использованием.',
         ok: 'Ок, понял'
+    },
+
+    create_or_join: {
+        title: "Выберите, кто вы",
+        join_title: "Я сотрудник",
+        join_description: "Присоединиться к существующей компании",
+        create_title: "Я компания",
+        create_description: "Создать новую компанию"
+    },
+    join_form: {
+        inn: "ИНН компании",
+        token: "Токен приглашения",
+        submit: "Присоединиться",
+        inn_invalid: "Введите корректный ИНН (10–12 цифр)",
+        token_required: "Токен обязателен",
+        back: "Назад"
+    },
+    join_success: {
+        title: "Успешное присоединение!",
+        description: "Вы успешно присоединились к компании. Теперь вы можете перейти в личный кабинет.",
+        go_to_profile: "Перейти в кабинет"
+    },
+    create_success: {
+        title: "Компания успешно создана!",
+        description: "Вы успешно зарегистрировали компанию. Теперь вы можете перейти в личный кабинет.",
+        go_to_profile: "Перейти в кабинет"
+    },
+    company_name_form: {
+        company_name: "Наименование компании",
+        company_name_placeholder: "Введите наименование",
+        company_name_hint: "Укажите юридическое или условное название компании"
+    },
+    personal_cabinet: {
+        title: "Персональный кабинет",
+        profile: "Профиль",
+        settings: {
+            title: "Настройки",
+            transfer_owner: "Передать права владельца",
+            select_member: "Выберите сотрудника",
+            transfer: "Передать",
+            change_type: "Изменить тип организации",
+            convert_to_ip: "Преобразовать в ИП",
+            danger_zone: "Опасная зона",
+            delete_company: "Удалить компанию",
+            edit: "Редактировать"
+        },
+        invite: {
+            title: "Пригласить сотрудников",
+            by_email: "По email",
+            by_token: "По токену",
+            send: "Отправить",
+            token_count: "Количество токенов",
+            generate: "Сгенерировать",
+            generated_tokens: "Сгенерированные токены",
+            copy: "Копировать"
+        },
+        members: {
+            title: "Сотрудники",
+            email: "Email",
+            role: "Роль",
+            status: "Статус",
+            remove: "Удалить"
+        },
+        actions: {
+            edit: "Редактировать",
+            delete: "Удалить",
+            save: "Сохранить",
+            cancel: "Отмена"
+        }
     }
 }
 

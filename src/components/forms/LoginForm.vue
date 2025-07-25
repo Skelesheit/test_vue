@@ -19,7 +19,7 @@ const onSubmit = async () => {
   try {
     const response = await api.login(email.value, password.value)
     if (response.ok) {
-      await router.push('/fill-form')  // редирект на success-страницу
+      await router.push('/join-or-create')  // редирект на success-страницу
     } else {
       errorMessage.value = response.data?.message as string || t('login_failed')
     }
