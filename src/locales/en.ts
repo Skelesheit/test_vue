@@ -119,14 +119,17 @@ const en: TranslationSchema = {
                 generate: "Generate",
                 generated_tokens: "Generated Tokens",
                 success_copy: "Token successfully copied",
-                copy: "Copy"
+                copy: "Copy",
+                email_sent_success: "Email sent successfully",
         },
         members: {
             title: "Members",
-                email: "Email",
-                role: "Role",
-                status: "Status",
-                remove: "Remove"
+            email: "Email",
+            role: "Role",
+            status: "Status",
+            remove: "Remove",
+            confirm_remove: "Are you sure to remove employee?"
+
         },
         actions: {
             edit: "Edit",

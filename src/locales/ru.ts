@@ -123,14 +123,16 @@ const ru: TranslationSchema = {
             generate: "Сгенерировать",
             generated_tokens: "Сгенерированные токены",
             success_copy: "Токен успешно скопирован",
-            copy: "Копировать"
+            copy: "Копировать",
+            email_sent_success: "Пользователю отправлено приглашение"
         },
         members: {
             title: "Сотрудники",
             email: "Email",
             role: "Роль",
             status: "Статус",
-            remove: "Удалить"
+            remove: "Удалить",
+            confirm_remove: "Вы действительно хотите удалить сотрудника?",
         },
         actions: {
             edit: "Редактировать",

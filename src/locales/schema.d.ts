@@ -125,6 +125,7 @@ export interface TranslationSchema {
             generated_tokens: string
             success_copy: string
             copy: string
+            email_sent_success: string
         }
         members: {
             title: string
@@ -132,6 +133,7 @@ export interface TranslationSchema {
             role: string
             status: string
             remove: string
+            confirm_remove: string
         }
         actions: {
             edit: string

@@ -118,6 +118,16 @@ export const api = {
         return await res.json()
     },
 
+    async revokeMember(memberId: number): Promise<{ ok: boolean; message?: string }> {
+        const res = await request(`enterprise/revoke/${memberId}`)
+        if (!res.ok) {
+            const msg = await res.text()
+            return { ok: false, message: msg }
+        }
+        const data = await res.json()
+        return { ok: true, message: data.message }
+    },
+
     async generateTokens(count: number): Promise<InviteTokensResponse> {
         const res = await request(`enterprise/generate-tokens/${count}`)
         if (!res.ok) throw new Error('Ошибка генерации токенов')
@@ -125,7 +135,7 @@ export const api = {
     },
 
     async joinToCompany(data: JoinTokenIn): Promise<{ ok: boolean; message?: string }> {
-        const res = await request('enterprise/join-to-company', {
+        const res = await request('enterprise/join-to-enterprise', {
             method: 'POST',
             body: JSON.stringify(data)
         })
@@ -135,6 +145,10 @@ export const api = {
         }
         return { ok: true }
     },
+
+
+
+
 
     async inviteByEmail(email: string): Promise<{ ok: boolean; message?: string }> {
         const res = await request(`enterprise/invite-by-email?email=${encodeURIComponent(email)}`)

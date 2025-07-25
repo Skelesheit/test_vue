@@ -92,7 +92,7 @@ const inviteByEmail = async (email: string) => {
   try {
     const result = await api.inviteByEmail(email)
     if (result.ok) {
-      alert(t('invite.email_sent_success'))
+      alert(t('personal_cabinet.invite.email_sent_success'))
     } else {
       alert(result.message || t('invite.email_sent_error'))
     }
@@ -114,11 +114,23 @@ const generateTokens = async (count: number) => {
   }
 }
 
-const removeMember = (id: number) => {
-  if (confirm(t('members.confirm_remove'))) {
-    profile.value.members = profile.value.members.filter(member => member.id !== id)
+const removeMember = async (id: number) => {
+  if (confirm(t('personal_cabinet.members.confirm_remove'))) {
+    try {
+      const result = await api.revokeMember(id)
+      if (result.ok) {
+        profile.value.members = profile.value.members.filter(member => member.id !== id)
+        alert(result.message || t('personal_cabinet.members.removed_success'))
+      } else {
+        alert(result.message )
+      }
+    } catch (error) {
+      console.error('Ошибка при отзыве сотрудника:', error)
+      alert(error)
+    }
   }
 }
+
 
 const transferOwner = (memberId: number) => {
   // Логика передачи прав владельца

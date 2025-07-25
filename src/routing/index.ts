@@ -4,7 +4,7 @@ import {requireAuth} from '@/services/guard'
 // Lazy-загрузка страниц
 const Personal = () => import("@/Pages/Personal/PersonalCabinet.vue")
 const SuccessCreate = () => import("@/Pages/SuccessCreate.vue")
-const SuccessJoin =() => import("@/Pages/SuccessCreate.vue")
+const SuccessJoin =() => import("@/Pages/SuccessJoin.vue")
 const JoinEnterprise = () => import("@/Pages/JoinEnterprise.vue")
 const JoinOrCreate = () => import('@/Pages/JoinOrCreate.vue')
 const CreateEnterprise = () => import("@/Pages/CreateEnterprise.vue");

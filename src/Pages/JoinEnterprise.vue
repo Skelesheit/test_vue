@@ -8,38 +8,52 @@ import {
   LucideLogIn
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
+import { api } from '@/services/api'
+
 const router = useRouter()
-
-const emit = defineEmits<{
-  (e: 'submit', data: { inn: string; token: string }): void
-  (e: 'back'): void
-}>()
-
 const { t } = useI18n()
 
 const inn = ref('')
 const token = ref('')
 const touched = ref({ inn: false, token: false })
+const isSubmitting = ref(false)
+const errorMessage = ref('')
 
-const errors = computed(() => {
-  return {
-    inn: !/^\d{10,12}$/.test(inn.value) ? t('join_form.inn_invalid') : '',
-    token: token.value.trim() === '' ? t('join_form.token_required') : ''
-  }
-})
+const errors = computed(() => ({
+  inn: !/^\d{10,12}$/.test(inn.value) ? t('join_form.inn_invalid') : '',
+  token: token.value.trim() === '' ? t('join_form.token_required') : ''
+}))
 
 function goBack() {
   router.push('/join-or-create')
 }
 
-
-function onSubmit() {
+async function onSubmit() {
   touched.value.inn = true
   touched.value.token = true
+  errorMessage.value = ''
+
   if (!errors.value.inn && !errors.value.token) {
-    emit('submit', { inn: inn.value.trim(), token: token.value.trim() })
+    isSubmitting.value = true
+    try {
+      const result = await api.joinToCompany({
+        inn: String(inn.value).trim(),
+        token: token.value.trim()
+      })
+      if (result.ok) {
+        await router.push('/success-to-join')
+      } else {
+        errorMessage.value = result.message
+      }
+    } catch (err) {
+      errorMessage.value = err
+      console.error(err)
+    } finally {
+      isSubmitting.value = false
+    }
   }
 }
+
 </script>
 
 <template>
@@ -90,10 +104,14 @@ function onSubmit() {
         <LucideChevronLeft class="w-4 h-4 mr-1" />
         {{ t('join_form.back') }}
       </button>
-      <button type="submit" class="btn btn-primary">
+      <button type="submit" class="btn btn-primary" :class="{ 'loading': isSubmitting }" :disabled="isSubmitting">
         <LucideLogIn class="w-4 h-4 mr-1" />
         {{ t('join_form.submit') }}
       </button>
+
     </div>
+    <p v-if="errorMessage" class="text-error text-sm text-center">
+      {{ errorMessage }}
+    </p>
   </form>
 </template>

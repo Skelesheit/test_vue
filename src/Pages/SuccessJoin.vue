@@ -17,7 +17,7 @@ const { t } = useI18n()
       <p class="text-base-content/70">
         {{ t('join_success.description') }}
       </p>
-      <router-link to="/dashboard" class="btn btn-success w-full">
+      <router-link to="/personal" class="btn btn-success w-full">
         <LucideUser class="w-5 h-5 mr-1" />
         {{ t('join_success.go_to_profile') }}
       </router-link>
