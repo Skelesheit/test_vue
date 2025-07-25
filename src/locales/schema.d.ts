@@ -123,6 +123,7 @@ export interface TranslationSchema {
             token_count: string
             generate: string
             generated_tokens: string
+            success_copy: string
             copy: string
         }
         members: {

@@ -1,8 +1,8 @@
 import {createRouter, createWebHistory, Router} from 'vue-router'
 import {requireAuth} from '@/services/guard'
-import Personal from "@/Pages/Personal.vue";
 
 // Lazy-загрузка страниц
+const Personal = () => import("@/Pages/Personal/PersonalCabinet.vue")
 const SuccessCreate = () => import("@/Pages/SuccessCreate.vue")
 const SuccessJoin =() => import("@/Pages/SuccessCreate.vue")
 const JoinEnterprise = () => import("@/Pages/JoinEnterprise.vue")

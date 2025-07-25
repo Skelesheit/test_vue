@@ -122,6 +122,7 @@ const ru: TranslationSchema = {
             token_count: "Количество токенов",
             generate: "Сгенерировать",
             generated_tokens: "Сгенерированные токены",
+            success_copy: "Токен успешно скопирован",
             copy: "Копировать"
         },
         members: {

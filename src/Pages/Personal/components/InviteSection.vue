@@ -31,7 +31,7 @@
           <input
               v-model="inviteEmail"
               type="email"
-              :placeholder="$t('email_placeholder')"
+              :placeholder="'example@example.com'"
               class="input input-bordered join-item flex-1"
               @keyup.enter="sendInvite"
           />
@@ -95,10 +95,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UsersIcon, CopyIcon } from 'lucide-vue-next'
-
+import {api} from '@/services/api'
 const { t } = useI18n()
 
 // Состояние
@@ -127,18 +127,21 @@ const generateTokens = async () => {
   if (tokenCount.value > 0) {
     isGenerating.value = true
     try {
-      const tokens = await emit('generate-tokens', tokenCount.value)
+      const { tokens } = await api.generateTokens(tokenCount.value)
       generatedTokens.value = tokens
+    } catch (err) {
+      console.error('Ошибка генерации токенов:', err)
     } finally {
       isGenerating.value = false
     }
   }
 }
 
+
 const copyToken = (token: string) => {
   navigator.clipboard.writeText(token)
       .then(() => {
-        alert(t('personal_cabinet.invite.copy_success'))
+        alert(t('personal_cabinet.invite.success_copy'))
       })
       .catch(err => {
         console.error('Ошибка при копировании токена:', err)

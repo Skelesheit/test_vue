@@ -118,6 +118,7 @@ const en: TranslationSchema = {
                 token_count: "Token Count",
                 generate: "Generate",
                 generated_tokens: "Generated Tokens",
+                success_copy: "Token successfully copied",
                 copy: "Copy"
         },
         members: {
