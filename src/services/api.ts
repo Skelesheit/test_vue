@@ -6,7 +6,7 @@ import {
     JoinTokenIn,
     LoginResponse,
     RegisterPayload,
-    RequestOptions
+    RequestOptions, UserResponse
 } from './interfaces'
 
 const API_URL = import.meta.env.VITE_APP_API_URL
@@ -95,8 +95,17 @@ export const api = {
         })
     },
 
-    async me(noRetry = false): Promise<Response> {
-        return await request('auth/me', {noRetry})
+    async me(noRetry = false): Promise<UserResponse | null> {
+        try {
+            const response = await request('auth/me', { noRetry })
+            if (!response.ok) {
+                return null
+            }
+            return await response.json() // ← Уже распарсенный JSON!
+        } catch (error) {
+            console.error('Error fetching user data:', error)
+            return null
+        }
     },
 
     async register(email: string, password: string, captcha: string): Promise<Response> {
@@ -146,10 +155,6 @@ export const api = {
         return { ok: true }
     },
 
-
-
-
-
     async inviteByEmail(email: string): Promise<{ ok: boolean; message?: string }> {
         const res = await request(`enterprise/invite-by-email?email=${encodeURIComponent(email)}`)
         if (!res.ok) {
@@ -160,8 +165,12 @@ export const api = {
     },
 
     async isAuthorized(): Promise<boolean> {
-        const res = await this.me(true)
-        console.log('[isAuthorized] response status:', res.status)
-        return res.ok
+        try {
+            const response = await request('auth/me', { noRetry: true })
+            return response.ok
+        } catch (error) {
+            console.error('Authorization check failed:', error)
+            return false
+        }
     }
 }

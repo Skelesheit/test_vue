@@ -1,7 +1,7 @@
 <template>
   <div class="bg-base-100 rounded-xl shadow-lg p-6 animate-slide-up" style="animation-delay: 0.3s">
     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-      <UsersIcon class="w-5 h-5 text-primary" />
+      <UsersIcon class="w-5 h-5 text-primary"/>
       {{ $t('personal_cabinet.members.title') }}
     </h2>
 
@@ -20,29 +20,37 @@
           <td v-text="member.email"></td>
           <td>
             <div class="badge" :class="{
-                'badge-primary': member.role === 'owner',
-                'badge-secondary': member.role === 'admin',
-                'badge-accent': member.role === 'member'
+                'badge-primary': member.role === MemberRole.OWNER,
+                'badge-secondary': member.role === MemberRole.ADMIN,
+                'badge-accent': member.role === MemberRole.EMPLOYEE
               }">
               {{ member.role }}
             </div>
           </td>
           <td>
             <div class="badge" :class="{
-                'badge-success': member.status === 'active',
-                'badge-warning': member.status === 'pending',
-                'badge-error': member.status === 'blocked'
+                'badge-success': member.status === MemberStatus.INVITED,
+                'badge-warning': member.status === MemberStatus.ACTIVE,
+                'badge-error': member.status === MemberStatus.REMOVED,
               }">
               {{ member.status }}
             </div>
           </td>
           <td>
             <button
+                v-if="member.role == MemberRole.OWNER"
+                class=" ml-2 btn-xs btn-ghost text-success cursor-default"
+                disabled
+            >
+              <Crown class="w-4 h-4" />
+            </button>
+            <button
+                v-else
                 class="btn btn-xs btn-ghost text-error"
                 @click="$emit('remove-member', member.id)"
                 :title="$t('personal_cabinet.members.remove')"
             >
-              <XIcon class="w-4 h-4" />
+              <XIcon class="w-4 h-4"/>
             </button>
           </td>
         </tr>
@@ -53,8 +61,9 @@
 </template>
 
 <script setup lang="ts">
-import { UsersIcon, XIcon } from 'lucide-vue-next'
-import { EnterpriseMemberOut } from '@/services/interfaces'
+import {Crown, UsersIcon, XIcon} from 'lucide-vue-next'
+import {EnterpriseMemberOut} from '@/services/interfaces'
+import {MemberRole, MemberStatus} from "@/services/enums";
 
 defineProps<{
   members: EnterpriseMemberOut[]

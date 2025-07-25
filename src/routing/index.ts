@@ -1,5 +1,10 @@
+// router/index.ts
 import {createRouter, createWebHistory, Router} from 'vue-router'
-import {requireAuth} from '@/services/guard'
+import {
+    requireAuth,
+    requireMembership,
+    requireNoMembership
+} from '@/services/guard'
 
 // Lazy-загрузка страниц
 const Personal = () => import("@/Pages/Personal/PersonalCabinet.vue")
@@ -15,6 +20,7 @@ const Layout = () => import('@/layout/Layout.vue')
 const EmailNotification = () => import('@/Pages/EmailNotification.vue')
 const End = () => import('@/Pages/End.vue')
 const EmailConfirmed = () => import('@/Pages/EmailConfirmed.vue')
+
 const routes = [
     {
         path: '/',
@@ -25,42 +31,46 @@ const routes = [
             {path: '/register', component: RegisterPage},
             {path: '/email-notify', component: EmailNotification},
             {path: '/email-confirmed', component: EmailConfirmed},
+
+            // Маршруты только для не-членов (еще не выбрали компанию)
             {
                 path: '/join-or-create',
                 component: JoinOrCreate,
-                meta: {requireAuth: true},
-            },
-            {
-              path: '/success-to-create',
-              component: SuccessCreate,
-              meta: {requireAuth: true},
-            },
-            {
-                path: '/success-to-join',
-                component: SuccessJoin,
-                meta: {requireAuth: true},
+                meta: {requiresAuth: true, requiresNoMembership: true},
             },
             {
                 path: '/join-to-company',
                 component: JoinEnterprise,
-                meta: {requireAuth: true},
+                meta: {requiresAuth: true, requiresNoMembership: true},
             },
             {
                 path: '/create-enterprise',
                 component: CreateEnterprise,
-                meta: {requiresAuth: true}
+                meta: {requiresAuth: true, requiresNoMembership: true}
+            },
+
+            // Маршруты только для членов (уже выбрали компанию)
+            {
+                path: '/success-to-create',
+                component: SuccessCreate,
+                meta: {requiresAuth: true, requiresMembership: true},
+            },
+            {
+                path: '/success-to-join',
+                component: SuccessJoin,
+                meta: {requiresAuth: true, requiresMembership: true},
             },
             {
                 path: '/personal',
                 component: Personal,
-                meta: {requireAuth: true}
+                meta: {requiresAuth: true, requiresMembership: true}
             },
-
             {
                 path: '/all-ok',
                 component: End,
-                meta: {requiresAuth: true}
+                meta: {requiresAuth: true, requiresMembership: true}
             },
+
             {path: '/:pathMatch(.*)*', component: NotFound}, // 404
         ]
     }
@@ -71,4 +81,7 @@ export const router: Router = createRouter({
     routes,
 })
 
+// Применяем гварды в правильном порядке
 router.beforeEach(requireAuth)
+router.beforeEach(requireNoMembership) // Сначала проверяем "не член"
+router.beforeEach(requireMembership)   // Потом проверяем "член"

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-base-200 p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto flex flex-col gap-6">
       <!-- Заголовок -->
       <HeaderSection
           :company-name="profile.name"
@@ -28,11 +28,6 @@
               @generate-tokens="generateTokens"
           />
 
-          <MembersSection
-              :members="profile.members"
-              @remove-member="removeMember"
-          />
-
           <SettingsSection
               :members="profile.members"
               :enterprise-type="profile.enterprise_type"
@@ -42,6 +37,10 @@
           />
         </div>
       </div>
+      <MembersSection
+          :members="profile.members"
+          @remove-member="removeMember"
+      />
     </div>
   </div>
 </template>

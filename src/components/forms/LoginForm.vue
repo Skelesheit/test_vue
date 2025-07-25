@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {useRouter} from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 import {api} from '@/services/api.js'
 
 const {t} = useI18n()
 const router = useRouter()
+const route = useRoute()
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -16,16 +17,37 @@ const errorMessage = ref<string | null>(null)
 const onSubmit = async () => {
   isLoading.value = true
   errorMessage.value = null
+
   try {
     const response = await api.login(email.value, password.value)
+
     if (response.ok) {
-      await router.push('/join-or-create')  // редирект на success-страницу
+      // После успешного логина проверяем членство пользователя
+      try {
+        const userData = await api.me(true)
+        if (userData) {
+          if (userData.is_member) {
+            // Уже член компании - редирект в личный кабинет
+            const redirectPath = route.query.redirect ?? '/personal'
+            await router.push(redirectPath as string)
+          } else {
+            // Не член компании - редирект на выбор
+            await router.push('/join-or-create')
+          }
+        } else {
+          // Если не удалось получить данные пользователя, редирект по умолчанию
+          await router.push('/join-or-create')
+        }
+      } catch (err) {
+        console.error('Error checking user membership:', err)
+        await router.push('/join-or-create')
+      }
     } else {
-      errorMessage.value = response.data?.message as string || t('login_failed')
+      errorMessage.value = response.data?.message as string || 'login_failed'
     }
   } catch (err: any) {
-    console.error(err)
-    errorMessage.value = err.message
+    console.error('Login error:', err)
+    errorMessage.value = err.message || t('login_failed')
   } finally {
     isLoading.value = false
   }

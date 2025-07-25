@@ -1,8 +1,15 @@
 // Универсальный тип для опций запроса
-import {EnterpriseType} from "@/services/enums";
+import {EnterpriseType, MemberRole, MemberStatus} from "@/services/enums";
 
 export interface RequestOptions extends RequestInit {
     noRetry?: boolean
+}
+
+export interface UserResponse{
+    email: string
+    created_at: string
+    is_verified: boolean
+    is_member: boolean
 }
 
 export interface LoginResponse {
@@ -100,8 +107,8 @@ export interface LegalEntity {
 export interface EnterpriseMemberOut {
     id: number
     email: string
-    role: string
-    status: string
+    role: MemberRole
+    status: MemberStatus
 }
 
 export interface EnterpriseResponse {
