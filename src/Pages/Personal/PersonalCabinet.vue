@@ -59,6 +59,7 @@ import CompanyInfo from './components/CompanyInfo.vue'
 import InviteSection from './components/InviteSection.vue'
 import MembersSection from './components/MembersSection.vue'
 import SettingsSection from './components/SettingsSection.vue'
+import ResourceSection from "@/Pages/Personal/components/ResourceSection.vue";
 
 // Локализация
 const { t, locale } = useI18n()

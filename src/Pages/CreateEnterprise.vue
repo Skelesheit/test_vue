@@ -14,7 +14,7 @@ import {
   LegalPayload,
   LegalEntityPayload,
   FillDataPayload
-} from '@/services/interfaces'
+} from '@/services/interfaces/enterprise.interface'
 import CompanyNameForm from "@/components/forms/CompanyNameForm.vue";
 
 // локализация и роутинг

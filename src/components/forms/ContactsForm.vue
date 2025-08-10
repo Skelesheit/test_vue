@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import {ContactPayload} from "@/services/interfaces";
+import {} from "@/services/interfaces/resources.interface";
 
 const { t } = useI18n()
 

@@ -3,7 +3,11 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '@/services/api.js'
 import { EnterpriseType } from "@/services/enums"
-import { ContactPayload, LegalEntityPayload, LegalPayload } from "@/services/interfaces"
+import {
+  ContactPayload,
+  LegalEntityPayload,
+  LegalPayload
+} from "@/services/interfaces/enterprise.interface"
 
 const { t } = useI18n()
 

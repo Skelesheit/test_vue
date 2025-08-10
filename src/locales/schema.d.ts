@@ -104,6 +104,9 @@ export interface TranslationSchema {
     personal_cabinet: {
         title: string
         profile: string
+        assortment : {
+            btn_text: string
+        },
         settings: {
             title: string
             transfer_owner: string
@@ -141,5 +144,141 @@ export interface TranslationSchema {
             save: string
             cancel: string
         }
-    }
+    },
+    resources: {
+
+        dialog: {
+            cancel: string,
+            delete_text: string,
+            delete_confirm: string,
+            delete_title: string,
+        }
+        table : {
+            save: string,
+            create: string,
+            delete: string,
+            edit: string,
+            view_tooltip: string
+            refresh: string,
+            actions: string,
+            loading: string,
+            add: string,
+            close: string,
+        }
+
+        navigation : {
+            shortName: string,
+            menu: string,
+            material_category: string,
+            material: string,
+            operation_type: string,
+            operation: string,
+            method: string,
+            machine_type: string,
+            machine: string,
+            tooling: string,
+            tool: string,
+            gost: string,
+            assortment_type: string,
+            gost_assortment: string,
+            assortment: string,
+        },
+        material: {
+            id: string;
+            brand: string;
+            dense: string;
+            hardness: string;
+            tear_resistance: string;
+            elongation: string;
+            category: string;
+            filter_placeholder: string;
+            no_data: string;
+        };
+        material_category: {
+            id: string;
+            name: string;
+            material_type: string;
+            no_data: string;
+        };
+        operation_type: {
+            id: string;
+            name: string;
+            no_data: string;
+        };
+        method: {
+            id: string;
+            name: string;
+            operation_type_id: string;
+            no_data: string;
+        };
+        machine_type: {
+            id: string;
+            name: string;
+            method_id: string;
+            no_data: string;
+        };
+        machine: {
+            id: string;
+            name: string;
+            machine_type_id: string;
+            count: string;
+            X: string;
+            Y: string;
+            Z: string;
+            H: string;
+            D: string;
+            no_data: string;
+        };
+        tooling: {
+            id: string;
+            name: string;
+            mark: string;
+            gost: string;
+            machine_id: string;
+            h_d_foot: string;
+            B: string;
+            L: string;
+            A: string;
+            h_d: string;
+            no_data: string;
+        };
+        tool: {
+            id: string;
+            name: string;
+            mark: string;
+            gost: string;
+            machine_id: string;
+            K_H_D: string;
+            alpha_B_d: string;
+            L: string;
+            I_max_cut: string;
+            S: string;
+            no_data: string;
+        };
+        gost: {
+            id: string;
+            number: string;
+            no_data: string;
+        };
+        assortment_type: {
+            id: string;
+            name: string;
+            no_data: string;
+        };
+        gost_assortment: {
+            id: string;
+            gost: string;
+            assortment_type: string;
+            no_data: string;
+        };
+        assortment: {
+            id: string;
+            gost: string;
+            B_D: string;
+            height: string;
+            strength: string;
+            length: string;
+            no_data: string;
+        };
+    };
 }

@@ -11,8 +11,10 @@ import {
 
 const API_URL = import.meta.env.VITE_APP_API_URL
 
+export type RequestOptions = RequestInit & { /* что-то своё */ }
+
 // Универсальный запрос
-async function request(endpoint: string, options: RequestOptions = {}): Promise<Response> {
+export async function request(endpoint: string, options: RequestOptions = {}): Promise<Response> {
     const headers: Record<string, string> = {
         ...(options.headers as Record<string, string> ?? {})
     }

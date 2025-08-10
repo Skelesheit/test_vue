@@ -6,22 +6,41 @@
         <div class="badge badge-primary mt-2">{{ enterpriseType }}</div>
       </div>
       <div class="flex gap-2">
-        <button class="btn btn-sm btn-outline" @click="$emit('toggle-theme')">
-          <SunIcon v-if="isDarkTheme" class="w-4 h-4" />
-          <MoonIcon v-else class="w-4 h-4" />
-        </button>
-        <button class="btn btn-sm btn-outline" @click="$emit('switch-language')">
-          {{ currentLang === 'ru' ? 'EN' : 'RU' }}
-        </button>
+        <router-link
+            to="/resources"
+            class="btn btn-primary
+      btn-wide sm:btn-md md:btn-lg
+      gap-2 px-4 py-3
+      rounded-xl
+      transition-all
+      duration-200
+      hover:scale-105 hover:shadow-xl
+      active:scale-100
+      focus:outline-none focus:ring-2
+      focus:ring-primary focus:ring-offset-2
+      group
+      flex items-center
+    "
+        >
+          <!-- Иконка -->
+          <ListIcon class="w-5 h-5 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110" />
+          <!-- Текст (адаптивный) -->
+          <span class="font-medium hidden sm:inline">
+      {{ t(`personal_cabinet.assortment.btn_text`)}}
+        </span>
+          </router-link>
+
       </div>
     </div>
   </div>
 </template>
 
+
+
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { SunIcon, MoonIcon } from 'lucide-vue-next'
+import { ListIcon } from 'lucide-vue-next'
 import { Theme } from '@/services/enums'
 
 const props = defineProps<{
@@ -34,7 +53,8 @@ const emit = defineEmits<{
   (e: 'switch-language'): void
 }>()
 
-const { locale } = useI18n()
+// Локализация
+const { t, locale } = useI18n()
 
 const isDarkTheme = computed(() =>
     document.documentElement.getAttribute('data-theme') === Theme.Dark

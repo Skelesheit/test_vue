@@ -18,8 +18,8 @@ const RegisterPage = () => import('@/Pages/Register.vue')
 const NotFound = () => import('@/Pages/NotFound.vue')
 const Layout = () => import('@/layout/Layout.vue')
 const EmailNotification = () => import('@/Pages/EmailNotification.vue')
-const End = () => import('@/Pages/End.vue')
 const EmailConfirmed = () => import('@/Pages/EmailConfirmed.vue')
+const Resources = () => import('@/Pages/Resources/ResourcePage.vue')
 
 const routes = [
     {
@@ -48,7 +48,6 @@ const routes = [
                 component: CreateEnterprise,
                 meta: {requiresAuth: true, requiresNoMembership: true}
             },
-
             // Маршруты только для членов (уже выбрали компанию)
             {
                 path: '/success-to-create',
@@ -66,11 +65,10 @@ const routes = [
                 meta: {requiresAuth: true, requiresMembership: true}
             },
             {
-                path: '/all-ok',
-                component: End,
+                path: '/resources',
+                component: Resources,
                 meta: {requiresAuth: true, requiresMembership: true}
             },
-
             {path: '/:pathMatch(.*)*', component: NotFound}, // 404
         ]
     }

@@ -99,6 +99,9 @@ const en: TranslationSchema = {
     personal_cabinet: {
         title: "Personal Cabinet",
             profile: "Profile",
+            assortment : {
+                btn_text: "Assortment"
+            },
             settings: {
             title: "Settings",
                 transfer_owner: "Transfer Ownership",
@@ -137,7 +140,133 @@ const en: TranslationSchema = {
                 save: "Save",
                 cancel: "Cancel"
         }
-    }
+    },
+    resources: {
+        dialog: {
+            cancel: "Cancel",
+            delete_text: "Are you want to delete model?",
+            delete_confirm: "Agree",
+            delete_title: "Confirm to delete"
+        },
+        table : {
+            delete: "Delete",
+            create: "Create",
+            edit: "Edit",
+            view_tooltip: "View",
+            refresh: "Refresh",
+            actions: "Action",
+            loading: "Loading",
+            add: "Add",
+            save: "Save",
+            close: "Exit"
+        },
+        navigation: {
+            shortName: 'Short name',
+            menu: 'Menu',
+            material_category: 'Material category',
+            material: 'Material',
+            operation_type: 'Operation type',
+            operation: 'Operation',
+            method: 'Method',
+            machine_type: 'Machine type',
+            machine: 'Machine',
+            tooling: 'Tooling',
+            tool: 'Tool',
+            gost: 'GOST',
+            assortment_type: 'Assortment type',
+            gost_assortment: 'GOST assortment',
+            assortment: 'Assortment',
+        },
+        general: {
+            actions: 'Действия',
+        },
+        material: {
+            id: "Id",
+            brand: "Brand",
+            dense: "Dense",
+            hardness: "Hardness",
+            tear_resistance: "Tear resistance",
+            elongation: "Elongation",
+            category: "Category",
+            filter_placeholder: "search by brand",
+            no_data: "no materials",
+        },
+        material_category: {
+            id: "Id",
+            name: "Name",
+            material_type: "Material type"
+        },
+        operation_type: {
+            id: "Id",
+            name: "Name"
+        },
+        method: {
+            id: "Id",
+            name: "Name",
+            operation_type_id: "Operation type id"
+        },
+        machine_type: {
+            id: "Id",
+            name: "Name",
+            method_id: "Method id"
+        },
+        machine: {
+            id: "Id",
+            name: "Name",
+            machine_type_id: "Machine type id",
+            count: "Count",
+            X: "X",
+            Y: "Y",
+            Z: "Z",
+            H: "H",
+            D: "D"
+        },
+        tooling: {
+            id: "Id",
+            name: "Name",
+            mark: "Mark",
+            gost: "Gost",
+            machine_id: "Machine id",
+            h_d_foot: "H d foot",
+            B: "B",
+            L: "L",
+            A: "A",
+            h_d: "H d"
+        },
+        tool: {
+            id: "Id",
+            name: "Name",
+            mark: "Mark",
+            gost: "Gost",
+            machine_id: "Machine id",
+            K_H_D: "K h d",
+            alpha_B_d: "Alpha b d",
+            L: "L",
+            I_max_cut: "I max cut",
+            S: "S"
+        },
+        gost: {
+            id: "Id",
+            number: "Number"
+        },
+        assortment_type: {
+            id: "Id",
+            name: "Name"
+        },
+        gost_assortment: {
+            id: "Id",
+            gost: "Gost",
+            assortment_type: "Assortment type"
+        },
+        assortment: {
+            id: "Id",
+            gost: "Gost",
+            B_D: "B d",
+            height: "Height",
+            strength: "Strength",
+            length: "Length"
+        }
+    },
 }
 
 export default en

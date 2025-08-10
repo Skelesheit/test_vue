@@ -30,3 +30,31 @@ export enum MemberStatus {
     LEFT = "left", // Вышел из компании
     REMOVED = "removed" // Был удалён админом/владельцем
 }
+
+export enum MetalType {
+    NONFERROUS = "NONFERROUS",
+    FERROUS = "FERROUS",
+    NONMETALLIC = "NONMETALLIC"
+}
+
+export enum FormMode {
+    EDIT = "edit",
+    VIEW = "view",
+    CREATE = "create",
+    HIDDEN = "hidden"
+}
+
+export enum ModelType {
+    MaterialCategory = 'material_category',
+    Material = 'material',
+    OperationType = 'operation_type',
+    Method = 'method',
+    MachineType = 'machine_type',
+    Machine = 'machine',
+    Tooling = 'tooling',
+    Tool = 'tool',
+    Gost = 'gost',
+    AssortmentType = 'assortment_type',
+    GostAssortment = 'gost_assortment',
+    Assortment = 'assortment'
+}

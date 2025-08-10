@@ -103,6 +103,9 @@ const ru: TranslationSchema = {
     personal_cabinet: {
         title: "Персональный кабинет",
         profile: "Профиль",
+        assortment : {
+            btn_text: "Ассортимент"
+        },
         settings: {
             title: "Настройки",
             transfer_owner: "Передать права владельца",
@@ -139,8 +142,131 @@ const ru: TranslationSchema = {
             delete: "Удалить",
             save: "Сохранить",
             cancel: "Отмена"
+        },
+    },
+    resources: {
+        dialog: {
+            cancel: "Отменить",
+            delete_text: "Вы действительно хотите удалить?",
+            delete_confirm: "Подтвердить",
+            delete_title: "Подтверждение удаления",
+        },
+        table : {
+            delete: "Удалить",
+            create: "Создать",
+            edit: "Редактировать",
+            view_tooltip: "Просмотр",
+            refresh: "Обновить",
+            actions: "Действия",
+            loading: "Загрузка",
+            add: "Создать",
+            save: "Сохранить",
+            close: "Закрыть"
+        },
+        navigation: {
+            shortName: 'Краткое имя',
+            menu: 'Меню',
+            material_category: 'Категория материала',
+            material: 'Материал',
+            operation_type: 'Тип операции',
+            operation: 'Операция',
+            method: 'Метод',
+            machine_type: 'Тип станка',
+            machine: 'Станок',
+            tooling: 'Оснастка',
+            tool: 'Инструмент',
+            gost: 'ГОСТ',
+            assortment_type: 'Тип сортамента',
+            gost_assortment: 'ГОСТ сортамента',
+            assortment: 'Сортамент',
+        },
+        material: {
+            id: "ID",
+            brand: "Бренд",
+            dense: "Плотность",
+            hardness: "Твёрдость",
+            tear_resistance: "Устойчивость к разрыву",
+            elongation: "Удлинение",
+            category: "Категория",
+            filter_placeholder: "поиск по бренду",
+            no_data: "Нет материалов"
+        },
+        material_category: {
+            id: "ID",
+            name: "Название",
+            material_type: "Тип материала"
+        },
+        operation_type: {
+            id: "ID",
+            name: "Название"
+        },
+        method: {
+            id: "ID",
+            name: "Название",
+            operation_type_id: "ID операции"
+        },
+        machine_type: {
+            id: "ID",
+            name: "Название",
+            method_id: "ID метода"
+        },
+        machine: {
+            id: "ID",
+            name: "Название",
+            machine_type_id: "Тип станка",
+            count: "Количество",
+            X: "X",
+            Y: "Y",
+            Z: "Z",
+            H: "H",
+            D: "D"
+        },
+        tooling: {
+            id: "ID",
+            name: "Название",
+            mark: "Марка",
+            gost: "ГОСТ",
+            machine_id: "ID станка",
+            h_d_foot: "h/d опоры",
+            B: "B",
+            L: "L",
+            A: "A",
+            h_d: "h/d"
+        },
+        tool: {
+            id: "ID",
+            name: "Название",
+            mark: "Марка",
+            gost: "ГОСТ",
+            machine_id: "ID станка",
+            K_H_D: "K_H_D",
+            alpha_B_d: "α B/d",
+            L: "L",
+            I_max_cut: "I max cut",
+            S: "S"
+        },
+        gost: {
+            id: "ID",
+            number: "Номер"
+        },
+        assortment_type: {
+            id: "ID",
+            name: "Название"
+        },
+        gost_assortment: {
+            id: "ID",
+            gost: "ГОСТ",
+            assortment_type: "Тип сортамента"
+        },
+        assortment: {
+            id: "ID",
+            gost: "ГОСТ",
+            B_D: "B/D",
+            height: "Высота",
+            strength: "Прочность",
+            length: "Длина"
         }
-    }
+    },
 }
 
 export default ru
