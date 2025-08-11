@@ -1,7 +1,10 @@
-import { shallowRef, ref, nextTick } from 'vue'
-import type { FormAdapter } from '@/Pages/Resources/forms/form.adapter'
-import { FormMode, type ModelType } from '@/services/enums'
+import {shallowRef, ref, nextTick} from 'vue'
+import type {FormAdapter} from '@/Pages/Resources/forms/form.adapter'
+import {FormMode, type ModelType} from '@/services/enums'
 import type BaseForm from '@/Pages/Resources/forms/BaseForm.vue'
+import { useNotify } from '@/composables/useNotify'
+import { useI18n } from 'vue-i18n'
+
 
 export function useFormHost() {
     const mode = ref<FormMode>(FormMode.HIDDEN)
@@ -27,7 +30,11 @@ export function useFormHost() {
         if (mode.value === FormMode.VIEW || mode.value === FormMode.EDIT) {
             if (currentId.value != null) {
                 busy.value = true
-                try { await adapter.value.load(currentId.value) } finally { busy.value = false }
+                try {
+                    await adapter.value.load(currentId.value)
+                } finally {
+                    busy.value = false
+                }
             }
         }
     }
@@ -56,32 +63,49 @@ export function useFormHost() {
         await ensureChildReady()
     }
 
+    const { success, error } = useNotify()
+    const { t } = useI18n()
+
     async function submit() {
+        if (busy.value) return            // защита от дабл-клика
         if (!adapter.value) return
 
         const okLocal = await adapter.value.validate?.()
         if (okLocal === false) return
 
         busy.value = true
+        const prevMode = mode.value       // запомним, чтобы понять текст тоста
         try {
             let dto: unknown | void
 
-            if (mode.value === FormMode.EDIT && currentId.value != null) {
-                dto = await adapter.value.update(currentId.value) // OutDTO | void
-            } else if (mode.value === FormMode.CREATE) {
-                dto = await adapter.value.create()               // OutDTO | void
+            if (prevMode === FormMode.EDIT && currentId.value != null) {
+                dto = await adapter.value.update(currentId.value)   // OutDTO | void
+            } else if (prevMode === FormMode.CREATE) {
+                dto = await adapter.value.create()                  // OutDTO | void
             } else {
                 return
             }
 
-            // успех — когда пришёл не-void (то есть OutDTO)
+            // успех — когда пришёл не-void (OutDTO)
             if (dto) {
-                const maybeId = getId(dto)
-                if (maybeId != null) currentId.value = maybeId
+                const id = getId(dto)
+                if (id != null) currentId.value = id
+
+                // (опционально) подтянуть каноничную версию после сохранения
+                if (currentId.value != null) {
+                    await adapter.value.load(currentId.value)
+                }
+
                 mode.value = FormMode.VIEW
-                // notify success — если нужно
+
+                success(prevMode === FormMode.EDIT
+                    ? t('resources.notifications.updated')
+                    : t('resources.notifications.created'))
             }
-            // если dto === undefined — остаёмся в том же режиме; notify уже сделал CRUD
+            // если dto === undefined — сохраняем режим, тост не показываем (ошибка будет в catch)
+        } catch (e: any) {
+            // сюда прилетит 400/409/422/500 из crudApi (он бросает Error(msg))
+            error(e?.message ?? t('errors.generic'))
         } finally {
             busy.value = false
         }
@@ -94,15 +118,34 @@ export function useFormHost() {
     }
 
 
-
     async function remove() {
         if (!adapter.value || currentId.value == null) return
         busy.value = true
-        try { await adapter.value.remove(currentId.value) } finally { busy.value = false; close() }
+        try {
+            const res = await adapter.value.remove(currentId.value)
+            if (res) {
+                success(t('resources.notifications.deleted'))
+                // очистка состояния на успехе
+                currentId.value = null
+                adapter.value.setVM?.({} as any) // опционально: сбросить форму
+                // emit('deleted') // если нужно перезагрузить список у родителя
+            }
+        } catch (e:any) {
+            error(e?.message ?? t('errors.generic')) // покажет 400/409/500 и т.п.
+        } finally {
+            busy.value = false;
+            close()
+        }
     }
 
-    function enterEdit() { if (mode.value === FormMode.VIEW) mode.value = FormMode.EDIT }
-    function cancelEdit() { if (mode.value === FormMode.EDIT) mode.value = FormMode.VIEW }
+    function enterEdit() {
+        if (mode.value === FormMode.VIEW) mode.value = FormMode.EDIT
+    }
+
+    function cancelEdit() {
+        if (mode.value === FormMode.EDIT) mode.value = FormMode.VIEW
+    }
+
     function close() {
         mode.value = FormMode.HIDDEN
         adapter.value = null
@@ -110,5 +153,21 @@ export function useFormHost() {
         model.value = null
     }
 
-    return { mode, busy, model, component, shellRef, adapter, currentId, openView, openEdit, openCreate, submit, remove, enterEdit, cancelEdit, close }
+    return {
+        mode,
+        busy,
+        model,
+        component,
+        shellRef,
+        adapter,
+        currentId,
+        openView,
+        openEdit,
+        openCreate,
+        submit,
+        remove,
+        enterEdit,
+        cancelEdit,
+        close
+    }
 }

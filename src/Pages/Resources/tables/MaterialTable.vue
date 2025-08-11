@@ -12,8 +12,7 @@ import { useNotify } from '@/composables/useNotify'
 import ConfirmDialog from "@/components/modals/dialog/ConfirmDialog.vue"
 
 // Нотификации
-const { error: errorNotify, success: successNotify } = useNotify()
-const notify = useNotify()
+const { error: notifyError, success: notifySuccess } = useNotify()
 // i18n
 const { t } = useI18n()
 
@@ -45,7 +44,7 @@ async function loadData() {
   try {
     materials.value = await materialApi.list({ brand: search.value })
   } catch (e: any) {
-    errorNotify('Failed to load materials')
+    notifyError('Failed to load materials')
     error.value = e?.message ?? String(e)
   } finally {
     loading.value = false
@@ -79,8 +78,10 @@ async function confirmDelete() {
   deleting.value = true
   try {
     await materialApi.delete(itemToDelete.value.id)
+    notifySuccess(t('resources.notifications.deleted'))
     await loadData()
   } catch (e: any) {
+    notifyError(e?.message ?? t('errors.generic'))
   } finally {
     deleting.value = false
     confirmOpen.value = false

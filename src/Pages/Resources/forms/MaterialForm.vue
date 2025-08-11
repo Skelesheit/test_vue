@@ -81,7 +81,7 @@ import {createCrudApi} from '@/services/crud'
 import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources.interface'
 import {useNotify} from "@/composables/useNotify";
 
-const {error: errorNotify, success: successNotify} = useNotify()
+const {success: successNotify} = useNotify()
 
 const {t} = useI18n()
 const readOnly = ref(true)
