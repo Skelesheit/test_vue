@@ -144,12 +144,27 @@ const ru: TranslationSchema = {
             cancel: "Отмена"
         },
     },
+    errors: {
+        bad_request: 'Некорректный запрос',
+        unauthorized: 'Не авторизован',
+        forbidden: 'Доступ запрещён',
+        not_found: 'Не найдено',
+        conflict: 'Конфликт данных',
+        unprocessable: 'Невалидные данные',
+        server: 'Внутренняя ошибка сервера',
+        generic: 'Что-то пошло не так',
+    },
     resources: {
         dialog: {
             cancel: "Отменить",
             delete_text: "Вы действительно хотите удалить?",
             delete_confirm: "Подтвердить",
             delete_title: "Подтверждение удаления",
+        },
+        notifications: {
+            created: 'Успешно создано',
+            updated: 'Успешно обновлено',
+            deleted: 'Успешно удалено',
         },
         table : {
             delete: "Удалить",
@@ -189,26 +204,30 @@ const ru: TranslationSchema = {
             elongation: "Удлинение",
             category: "Категория",
             filter_placeholder: "поиск по бренду",
-            no_data: "Нет материалов"
+            no_data: "Нет материалов",
         },
         material_category: {
             id: "ID",
             name: "Название",
-            material_type: "Тип материала"
+            material_type: "Тип материала",
+            no_data: "Нет категорий материалов",
         },
         operation_type: {
             id: "ID",
-            name: "Название"
+            name: "Название",
+            no_data: "Нет собственных типов операций",
         },
         method: {
             id: "ID",
             name: "Название",
-            operation_type_id: "ID операции"
+            operation_type_id: "ID операции",
+            no_data: "Нет собственных методов материалов",
         },
         machine_type: {
             id: "ID",
             name: "Название",
-            method_id: "ID метода"
+            method_id: "ID метода",
+            no_data: "Нет собственных типов станков",
         },
         machine: {
             id: "ID",
@@ -219,7 +238,8 @@ const ru: TranslationSchema = {
             Y: "Y",
             Z: "Z",
             H: "H",
-            D: "D"
+            D: "D",
+            no_data: "Нет станков",
         },
         tooling: {
             id: "ID",
@@ -231,7 +251,8 @@ const ru: TranslationSchema = {
             B: "B",
             L: "L",
             A: "A",
-            h_d: "h/d"
+            h_d: "h/d",
+            no_data: "Нет оснасток",
         },
         tool: {
             id: "ID",
@@ -243,20 +264,24 @@ const ru: TranslationSchema = {
             alpha_B_d: "α B/d",
             L: "L",
             I_max_cut: "I max cut",
-            S: "S"
+            S: "S",
+            no_data: "Нет инструментов",
         },
         gost: {
             id: "ID",
-            number: "Номер"
+            number: "Номер",
+            no_data: "Нет личных ГОСТ-ов",
         },
         assortment_type: {
             id: "ID",
-            name: "Название"
+            name: "Название",
+            no_data: "Нет личных типов ассортимента",
         },
         gost_assortment: {
             id: "ID",
             gost: "ГОСТ",
-            assortment_type: "Тип сортамента"
+            assortment_type: "Тип сортамента",
+            no_data: "Нет записей ГОСТ, привязанных к ассортименту",
         },
         assortment: {
             id: "ID",
@@ -264,7 +289,8 @@ const ru: TranslationSchema = {
             B_D: "B/D",
             height: "Высота",
             strength: "Прочность",
-            length: "Длина"
+            length: "Длина",
+            no_data: "Нет ассортимента",
         }
     },
 }

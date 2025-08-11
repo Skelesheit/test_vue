@@ -145,14 +145,28 @@ export interface TranslationSchema {
             cancel: string
         }
     },
+    errors: {
+        bad_request: string
+        unauthorized: string
+        forbidden: string
+        not_found: string
+        conflict: string
+        unprocessable: string
+        server: string
+        generic: string
+    }
     resources: {
-
+        notifications: {
+            created: string
+            updated: string
+            deleted: string
+        },
         dialog: {
             cancel: string,
             delete_text: string,
             delete_confirm: string,
             delete_title: string,
-        }
+        },
         table : {
             save: string,
             create: string,
@@ -164,7 +178,7 @@ export interface TranslationSchema {
             loading: string,
             add: string,
             close: string,
-        }
+        },
 
         navigation : {
             shortName: string,

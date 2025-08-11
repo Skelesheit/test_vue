@@ -7,11 +7,9 @@ import {
     LoginResponse,
     RegisterPayload,
     RequestOptions, UserResponse
-} from './interfaces'
+} from '@/services/interfaces/'
 
 const API_URL = import.meta.env.VITE_APP_API_URL
-
-export type RequestOptions = RequestInit & { /* что-то своё */ }
 
 // Универсальный запрос
 export async function request(endpoint: string, options: RequestOptions = {}): Promise<Response> {

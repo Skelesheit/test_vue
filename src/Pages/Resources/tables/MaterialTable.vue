@@ -13,9 +13,12 @@ import ConfirmDialog from "@/components/modals/dialog/ConfirmDialog.vue"
 
 // Нотификации
 const { error: errorNotify, success: successNotify } = useNotify()
+const notify = useNotify()
+// i18n
+const { t } = useI18n()
 
 // CRUD API
-const materialApi = createCrudApi<MaterialOut, MaterialCreate, MaterialUpdate>('resources/materials')
+const materialApi = createCrudApi<MaterialOut, MaterialCreate, MaterialUpdate>('resources/materials',)
 
 // Хост формы
 const {
@@ -24,8 +27,7 @@ const {
   submit, remove, enterEdit, cancelEdit, close
 } = useFormHost()
 
-// i18n
-const { t } = useI18n()
+
 
 // Данные таблицы
 const materials = ref<MaterialOut[]>([])
@@ -77,10 +79,8 @@ async function confirmDelete() {
   deleting.value = true
   try {
     await materialApi.delete(itemToDelete.value.id)
-    successNotify('Material was deleted')
     await loadData()
   } catch (e: any) {
-    errorNotify(e?.message ?? String(e))
   } finally {
     deleting.value = false
     confirmOpen.value = false

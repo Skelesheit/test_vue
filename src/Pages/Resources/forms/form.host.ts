@@ -58,21 +58,42 @@ export function useFormHost() {
 
     async function submit() {
         if (!adapter.value) return
-        const ok = await adapter.value.validate()
-        if (!ok) return
+
+        const okLocal = await adapter.value.validate?.()
+        if (okLocal === false) return
 
         busy.value = true
         try {
+            let dto: unknown | void
+
             if (mode.value === FormMode.EDIT && currentId.value != null) {
-                await adapter.value.update(currentId.value)
-                mode.value = FormMode.VIEW
+                dto = await adapter.value.update(currentId.value) // OutDTO | void
             } else if (mode.value === FormMode.CREATE) {
-                const created = await adapter.value.create()
-                mode.value = FormMode.VIEW
-                if (typeof created === 'number') currentId.value = created
+                dto = await adapter.value.create()               // OutDTO | void
+            } else {
+                return
             }
-        } finally { busy.value = false }
+
+            // успех — когда пришёл не-void (то есть OutDTO)
+            if (dto) {
+                const maybeId = getId(dto)
+                if (maybeId != null) currentId.value = maybeId
+                mode.value = FormMode.VIEW
+                // notify success — если нужно
+            }
+            // если dto === undefined — остаёмся в том же режиме; notify уже сделал CRUD
+        } finally {
+            busy.value = false
+        }
     }
+
+    function getId(o: unknown): number | undefined {
+        return (o && typeof o === 'object' && 'id' in o!)
+            ? (o as { id?: number }).id
+            : undefined
+    }
+
+
 
     async function remove() {
         if (!adapter.value || currentId.value == null) return

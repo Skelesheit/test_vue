@@ -1,11 +1,11 @@
 <template>
   <dialog v-if="mode !== FormMode.HIDDEN" class="modal modal-open">
-    <div class="modal-box w-11/12 max-w-3xl">
+    <form class="modal-box w-11/12 max-w-3xl">
       <!-- Header -->
       <div class="flex items-center justify-between mb-4">
         <div class="w-6"></div>
         <h2 class="text-lg md:text-xl font-semibold text-center">{{ title }}</h2>
-        <button class="btn btn-ghost btn-sm" @click="$emit('close')" :aria-label="t('resources.table.close')">
+        <button type="button" class="btn btn-ghost btn-sm" @click="$emit('close')" :aria-label="t('resources.table.close')">
           <X class="w-5 h-5" />
         </button>
       </div>
@@ -18,10 +18,10 @@
       <!-- Footer / Actions -->
       <div class="mt-6 border-t pt-4 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <button v-if="mode === FormMode.VIEW" class="btn btn-error btn-outline" @click="confirmDelete = true">
+          <button type="button" v-if="mode === FormMode.VIEW" class="btn btn-error btn-outline" @click="confirmDelete = true">
             <Trash2 class="w-4 h-4" /> {{ t('resources.table.delete') }}
           </button>
-          <button v-if="mode === FormMode.EDIT" class="btn" @click="$emit('cancelEdit')">
+          <button type="button" v-if="mode === FormMode.EDIT" class="btn" @click="$emit('cancelEdit')">
             {{ t('resources.dialog.cancel') }}
           </button>
         </div>
@@ -30,15 +30,15 @@
           <button v-if="mode === FormMode.VIEW" class="btn btn-warning" @click="$emit('enterEdit')">
             <Pencil class="w-4 h-4" /> {{ t('resources.table.edit') }}
           </button>
-          <button v-if="mode === FormMode.EDIT" :disabled="busy" class="btn btn-success" @click="$emit('submit')">
+          <button type="submit" v-if="mode === FormMode.EDIT" :disabled="busy" class="btn btn-success" @click="$emit('submit')">
             <Save class="w-4 h-4" /> {{ t('resources.table.save') }}
           </button>
-          <button v-if="mode === FormMode.CREATE" :disabled="busy" class="btn btn-success" @click="$emit('submit')">
+          <button type="submit" v-if="mode === FormMode.CREATE" :disabled="busy" class="btn btn-success" @click="$emit('submit')">
             <Plus class="w-4 h-4" /> {{ t('resources.table.create') }}
           </button>
         </div>
       </div>
-    </div>
+    </form>
 
     <!-- Delete confirm -->
     <div class="modal" :class="{ 'modal-open': confirmDelete }">

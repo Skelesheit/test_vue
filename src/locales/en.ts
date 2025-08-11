@@ -141,12 +141,27 @@ const en: TranslationSchema = {
                 cancel: "Cancel"
         }
     },
+    errors: {
+        bad_request: 'Bad request',
+        unauthorized: 'Unauthorized',
+        forbidden: 'Forbidden',
+        not_found: 'Not found',
+        conflict: 'Conflict',
+        unprocessable: 'Unprocessable entity',
+        server: 'Server error',
+        generic: 'Something went wrong',
+    },
     resources: {
         dialog: {
             cancel: "Cancel",
             delete_text: "Are you want to delete model?",
             delete_confirm: "Agree",
             delete_title: "Confirm to delete"
+        },
+        notifications: {
+            created: 'Created successfully',
+            updated: 'Updated successfully',
+            deleted: 'Deleted successfully',
         },
         table : {
             delete: "Delete",
@@ -177,9 +192,6 @@ const en: TranslationSchema = {
             gost_assortment: 'GOST assortment',
             assortment: 'Assortment',
         },
-        general: {
-            actions: 'Действия',
-        },
         material: {
             id: "Id",
             brand: "Brand",
@@ -194,21 +206,25 @@ const en: TranslationSchema = {
         material_category: {
             id: "Id",
             name: "Name",
-            material_type: "Material type"
+            material_type: "Material type",
+            no_data: "there isn't your categories"
         },
         operation_type: {
             id: "Id",
-            name: "Name"
+            name: "Name",
+            no_data: "there isn't your operation types"
         },
         method: {
             id: "Id",
             name: "Name",
-            operation_type_id: "Operation type id"
+            operation_type_id: "Operation type id",
+            no_data: "there isn't your methods"
         },
         machine_type: {
             id: "Id",
             name: "Name",
-            method_id: "Method id"
+            method_id: "Method id",
+            no_data: "there isn't your machines type"
         },
         machine: {
             id: "Id",
@@ -219,7 +235,8 @@ const en: TranslationSchema = {
             Y: "Y",
             Z: "Z",
             H: "H",
-            D: "D"
+            D: "D",
+            no_data: "there isn't your machines"
         },
         tooling: {
             id: "Id",
@@ -231,7 +248,8 @@ const en: TranslationSchema = {
             B: "B",
             L: "L",
             A: "A",
-            h_d: "H d"
+            h_d: "H d",
+            no_data: "there isn't your tooling",
         },
         tool: {
             id: "Id",
@@ -243,20 +261,24 @@ const en: TranslationSchema = {
             alpha_B_d: "Alpha b d",
             L: "L",
             I_max_cut: "I max cut",
-            S: "S"
+            S: "S",
+            no_data: "there isn't your tools",
         },
         gost: {
             id: "Id",
-            number: "Number"
+            number: "Number",
+            no_data: "there isn't your GOST",
         },
         assortment_type: {
             id: "Id",
-            name: "Name"
+            name: "Name",
+            no_data: "there isn't your assortment type",
         },
         gost_assortment: {
             id: "Id",
             gost: "Gost",
-            assortment_type: "Assortment type"
+            assortment_type: "Assortment type",
+            no_data: "there isn't your gost with assortment",
         },
         assortment: {
             id: "Id",
@@ -264,7 +286,8 @@ const en: TranslationSchema = {
             B_D: "B d",
             height: "Height",
             strength: "Strength",
-            length: "Length"
+            length: "Length",
+            no_data: "there isn't your assortments"
         }
     },
 }

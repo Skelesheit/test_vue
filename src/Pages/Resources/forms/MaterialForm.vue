@@ -1,53 +1,89 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4" :class="{ 'opacity-60 pointer-events-none select-none': readOnly }">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4"
+       :class="{ 'opacity-60 pointer-events-none select-none': readOnly }">
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.brand') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model="vm.brand" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model="vm.brand"
+             type="text"
+             required
+      />
     </label>
 
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.category') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model.number="vm.category_id" type="number" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model.number="vm.category_id"
+             type="number"
+             min="0"
+             required
+      />
     </label>
 
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.dense') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model.number="vm.dense" type="number" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model.number="vm.dense"
+             type="number"
+             step="0.001"
+             min="0"
+             required
+      />
     </label>
 
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.hardness') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model.number="vm.hardness" type="number" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model.number="vm.hardness"
+             type="number"
+             step="0.001"
+             min="0"
+             required
+      />
     </label>
 
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.tear_resistance') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model.number="vm.tear_resistance" type="number" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model.number="vm.tear_resistance"
+             type="number"
+             step="0.001"
+             min="0"
+             required
+      />
     </label>
 
     <label class="form-control">
       <span class="label-text">{{ t('resources.material.elongation') }}</span>
-      <input class="input input-bordered" :readonly="readOnly" v-model.number="vm.elongation" type="number" />
+      <input class="input input-bordered"
+             :readonly="readOnly"
+             v-model.number="vm.elongation"
+             type="number"
+             step="0.001"
+             min="0"
+             required
+      />
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { FormAdapter } from '@/Pages/Resources/forms/form.adapter'
-import { FormMode } from '@/services/enums'
-import { createCrudApi } from '@/services/crud'
-import type {
-  MaterialOut,
-  MaterialCreate,
-  MaterialUpdate
-} from '@/services/interfaces/resources.interface'
+import {reactive, ref} from 'vue'
+import {useI18n} from 'vue-i18n'
+import type {FormAdapter} from '@/Pages/Resources/forms/form.adapter'
+import {FormMode} from '@/services/enums'
+import {createCrudApi} from '@/services/crud'
+import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources.interface'
 import {useNotify} from "@/composables/useNotify";
 
 const {error: errorNotify, success: successNotify} = useNotify()
 
-const { t } = useI18n()
+const {t} = useI18n()
 const readOnly = ref(true)
 
 // ViewModel — подстрой под реальные поля Material*, при необходимости
@@ -133,33 +169,42 @@ async function load(id: number) {
   Object.assign(vm, toVM(dto))
 }
 
-function setMode(mode: FormMode) { readOnly.value = (mode === FormMode.VIEW) }
-function getTitleKey() { return 'resources.navigation.material' }
-function getVM() { return vm }
-function setVM(patch: Partial<MaterialVM>) { Object.assign(vm, patch) }
+function setMode(mode: FormMode) {
+  readOnly.value = (mode === FormMode.VIEW)
+}
+
+function getTitleKey() {
+  return 'resources.navigation.material'
+}
+
+function getVM() {
+  return vm
+}
+
+function setVM(patch: Partial<MaterialVM>) {
+  Object.assign(vm, patch)
+}
 
 function validate() {
   return !!(vm.brand && vm.brand.trim().length)
 }
 
-async function create() {
-  const dto = await materialApi.create(toCreate(vm))
-  successNotify('Material with ' + dto.brand +  ' has created')
+async function create(): Promise<MaterialOut | void> {
+  const dto = await materialApi.create(toCreate(vm))   // CRUD: success -> DTO, error -> null + notify
+  if (!dto) return
   Object.assign(vm, toVM(dto))
-  // @ts-ignore
-
-  return (dto as any).id
+  return dto
 }
 
-async function update(id: number) {
+async function update(id: number): Promise<MaterialOut | void> {
   const dto = await materialApi.update(id, toUpdate(vm))
-  successNotify('Material ' + id +  ' has updated')
+  if (!dto) return
   Object.assign(vm, toVM(dto))
+  return dto
 }
 
-async function remove(id: number) {
-  await materialApi.delete(id)
-  successNotify('Material ' + id +  ' has deleted')
+async function remove(id: number): Promise<boolean> {
+  return await materialApi.delete(id) !== null
 }
 
 // expose адаптер наружу
