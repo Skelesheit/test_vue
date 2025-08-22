@@ -78,7 +78,7 @@ import {useI18n} from 'vue-i18n'
 import type {FormAdapter} from '@/Pages/Resources/forms/form.adapter'
 import {FormMode} from '@/services/enums'
 import {createCrudApi} from '@/services/crud'
-import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources.interface'
+import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources/material.interface'
 import {useNotify} from "@/composables/useNotify";
 
 const {success: successNotify} = useNotify()

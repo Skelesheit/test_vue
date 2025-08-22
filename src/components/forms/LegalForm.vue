@@ -52,26 +52,25 @@ watch(() => props.legal.inn, async (val) => {
 async function fetchDadata(inn: string) {
   try {
     const result = await api.getDadataSuggest(inn)
-    const item = result?.suggestions?.[0]?.data
-    if (!item) {
+    if (!result) {
       console.warn('Dadata: пустые данные')
       return
     }
-    console.log('Dadata item:', item)
+    console.log('Dadata item:', result)
 
     // legal
-    updateLegal('ogrn', item.ogrn || '')
-    updateLegal('management_name', item.management?.name || '')
+    updateLegal('ogrn', result.ogrn || '')
+    updateLegal('management_name', result.management?.name || '')
 
     // profileLegal
-    updateProfile('org_name', item.name?.full_with_opf || '')
-    updateProfile('kpp', item.kpp || '')
-    updateProfile('opf_full', item.opf?.full || '')
-    updateProfile('opf_short', item.opf?.short || '')
+    updateProfile('org_name', result.name?.full_with_opf || '')
+    updateProfile('kpp', result.kpp || '')
+    updateProfile('opf_full', result.opf?.full || '')
+    updateProfile('opf_short', result.opf?.short || '')
 
     // contact
-    updateContact('address', item.address?.value || '')
-    updateContact('city', item.address?.data?.city || '') // тут были ошибки
+    updateContact('address', result.address?.value || '')
+    updateContact('city', result.address?.data?.city || '') // тут были ошибки
   } catch (e) {
     console.error('Ошибка при запросе к Dadata:', e)
   }
@@ -93,7 +92,7 @@ async function fetchDadata(inn: string) {
         <input
             type="number"
             :value="legal.inn"
-            @input="updateLegal('inn', $event.target.value)"
+            @input="updateLegal('inn', ($event.target as HTMLInputElement).value)"
             :placeholder="t('form.inn')"
             class="input input-bordered w-full"
         />
@@ -108,7 +107,7 @@ async function fetchDadata(inn: string) {
         <input
             type="number"
             :value="legal.ogrn"
-            @input="updateLegal('ogrn', $event.target.value)"
+            @input="updateLegal('ogrn', ($event.target as HTMLInputElement).value)"
             :placeholder="t('form.ogrn')"
             class="input input-bordered w-full"
         />
@@ -123,7 +122,7 @@ async function fetchDadata(inn: string) {
           <input
               type="text"
               :value="legal.management_name"
-              @input="updateLegal('management_name', $event.target.value)"
+              @input="updateLegal('management_name', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.ip_fullname')"
               class="input input-bordered w-full"
           />
@@ -139,7 +138,7 @@ async function fetchDadata(inn: string) {
           <input
               type="text"
               :value="profileLegal.org_name"
-              @input="updateProfile('org_name', $event.target.value)"
+              @input="updateProfile('org_name', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.org_name')"
               class="input input-bordered w-full"
           />
@@ -151,8 +150,10 @@ async function fetchDadata(inn: string) {
           </label>
           <input
               type="number"
+              minlength="9"
+              maxlength="9"
               :value="profileLegal.kpp"
-              @input="updateProfile('kpp', $event.target.value)"
+              @input="updateProfile('kpp', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.kpp')"
               class="input input-bordered w-full"
           />
@@ -165,7 +166,7 @@ async function fetchDadata(inn: string) {
           <input
               type="text"
               :value="profileLegal.opf_full"
-              @input="updateProfile('opf_full', $event.target.value)"
+              @input="updateProfile('opf_full', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.opf_full')"
               class="input input-bordered w-full"
           />
@@ -178,7 +179,7 @@ async function fetchDadata(inn: string) {
           <input
               type="text"
               :value="profileLegal.opf_short"
-              @input="updateProfile('opf_short', $event.target.value)"
+              @input="updateProfile('opf_short', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.opf_short')"
               class="input input-bordered w-full"
           />
@@ -191,7 +192,7 @@ async function fetchDadata(inn: string) {
           <input
               type="text"
               :value="legal.management_name"
-              @input="updateLegal('management_name', $event.target.value)"
+              @input="updateLegal('management_name', ($event.target as HTMLInputElement).value)"
               :placeholder="t('form.manager')"
               class="input input-bordered w-full"
           />

@@ -6,7 +6,8 @@ import {
     JoinTokenIn,
     LoginResponse,
     RegisterPayload,
-    RequestOptions, UserResponse
+    RequestOptions,
+    UserResponse
 } from '@/services/interfaces/'
 
 const API_URL = import.meta.env.VITE_APP_API_URL
@@ -46,7 +47,7 @@ export async function request(endpoint: string, options: RequestOptions = {}): P
 // Обновление access token
 async function tryRefreshToken(): Promise<boolean> {
     const res = await fetch(`${API_URL}/auth/refresh`, {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include'
     })
     if (!res.ok) return false
@@ -117,7 +118,7 @@ export const api = {
     },
 
     async getDadataSuggest(inn: string): Promise<DadataOrganization> {
-        const res =  await request(`dadata/suggest/${inn}`)
+        const res =  await request(`client/dadata/${inn}`)
         if (!res.ok) throw new Error('Ошибка при запросе Dadata')
         return await res.json()
     },

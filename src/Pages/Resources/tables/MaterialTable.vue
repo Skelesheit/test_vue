@@ -3,7 +3,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createCrudApi } from "@/services/crud"
 import { Plus, RefreshCw, Trash2, Eye, Pencil } from 'lucide-vue-next'
-import { MaterialCreate, MaterialUpdate, MaterialOut } from "@/services/interfaces/resources.interface"
+import { MaterialCreate, MaterialUpdate, MaterialOut } from "@/services/interfaces/resources/material.interface"
 import BaseForm from "@/Pages/Resources/forms/BaseForm.vue"
 import { ModelType } from "@/services/enums"
 import { useFormHost } from "@/Pages/Resources/forms/form.host"
