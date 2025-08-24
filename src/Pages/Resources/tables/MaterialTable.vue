@@ -238,7 +238,10 @@ function humanMetal(t?: MetalType | null) {
       <table class="table table-zebra">
         <thead class="sticky top-0 z-20 bg-base-100">
         <!-- Заголовки с сортировкой -->
-        <tr>
+        <tr class="[&>th]:px-3 [&>th]:py-2
+               [&>th]:border-l [&>th]:border-base-300
+               [&>th:first-child]:border-l-0"
+        >
           <!-- brand -->
           <th class="min-w-44">
             <div class="th-head">
@@ -304,7 +307,8 @@ function humanMetal(t?: MetalType | null) {
         </tr>
 
         <!-- Ряд фильтров (по column) -->
-        <tr>
+        <tr class="[&>th]:px-3 [&>th]:py-2
+               [&>th]:border-l [&>th]:border-base-300 [&>th:first-child]:border-l-0">
           <!-- brand -->
           <th>
             <input class="input input-bordered input-sm w-full" v-model="filters.brand" placeholder="бренд..."/>
@@ -350,7 +354,8 @@ function humanMetal(t?: MetalType | null) {
           </th>
 
           <!-- numeric min/max -->
-          <th v-for="col in numericCols" :key="col.key">
+          <th
+              v-for="col in numericCols" :key="col.key">
             <div class="flex gap-2 flex-col">
               <input class="input input-bordered input-sm " type="number" step="0.0001"
                      v-model.number="(filters as any)[col.key].min" placeholder="min"/>
@@ -363,7 +368,12 @@ function humanMetal(t?: MetalType | null) {
         </tr>
         </thead>
 
-        <tbody>
+        <tbody
+            class="[&>tr>td]:px-3 [&>tr>td]:py-2
+             [&>tr>td]:border-l [&>tr>td]:border-base-300 [&>tr>td:first-child]:border-l-0
+             [&>tr]:border-b [&>tr]:border-base-300 [&>tr:last-child]:border-b-0"
+        >
+
         <tr v-if="loading">
           <td :colspan="4 + numericCols.length + 1">Загрузка…</td>
         </tr>
@@ -391,12 +401,13 @@ function humanMetal(t?: MetalType | null) {
 
           <td class="sticky right-0 z-30 bg-base-100 sticky-right-shadow">
             <div class="flex gap-2 justify-end pr-2">
-              <button class="btn btn-ghost btn-xs tooltip"
+              <button class="btn btn-xs tooltip"
                       :data-tip="$t('resources.table.view_tooltip')"
                       @click="openView(MaterialForm, ModelType.Material, m.id)">
                 <Eye class="w-4 h-4"/>
+                View
               </button>
-              <button class="btn btn-xs gap-1"
+              <button class="btn btn-xs btn-accent gap-1"
                       :data-tip="$t('resources.table.edit')"
                       @click="openEdit(MaterialForm, ModelType.Material, m.id)">
                 <Edit3 class="w-4 h-4"/>

@@ -206,6 +206,9 @@ const ru: TranslationSchema = {
         material: {
             id: "ID",
 
+            add_category: "Добавить категорию",
+            add_assortment_type: "Добавить тип ассортимента",
+
             assortment_type: "тип ассортимента",
             quantity: "количество",
             price: "Цена, руб.",
@@ -226,8 +229,8 @@ const ru: TranslationSchema = {
             comment: 'Комментарий',
             comment_en: 'Комментарий (EN)',
 
-            create_title: 'Материал',
-            edit_title: 'Материал',
+            create_title: 'Создать материал',
+            edit_title: 'Редактировать материал',
             subtitle: 'Заполните параметры материала',
 
             sections: {

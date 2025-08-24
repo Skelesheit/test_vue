@@ -203,6 +203,9 @@ const en: TranslationSchema = {
         material: {
             id: "ID",
 
+            add_category: "Add category",
+            add_assortment_type: "Add assortment type",
+
             assortment_type: "Assortment type",
             quantity: "Quantity",
             price: "Price, RUB",

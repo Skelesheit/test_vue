@@ -212,6 +212,9 @@ export interface TranslationSchema {
             id: string,
             no_data: string,
 
+            add_category: string,
+            add_assortment_type: string,
+
             brand: string,
             dense: string,
             hardness: string,

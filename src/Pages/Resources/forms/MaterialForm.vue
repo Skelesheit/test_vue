@@ -4,11 +4,17 @@ import {useI18n} from 'vue-i18n'
 import type {FormAdapter} from '@/Pages/Resources/forms/form.adapter'
 import {FormMode} from '@/services/enums'
 import {createCrudApi} from '@/services/crud'
-import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources/material.interface'
 import {useNotify} from "@/composables/useNotify";
 import {
+  MaterialCreate,
+  MaterialOut,
+  MaterialUpdate,
   AssortmentTypeCreate,
-  AssortmentTypeOut, AssortmentTypeUpdate, GostCreate, GostOut, GostUpdate,
+  AssortmentTypeOut,
+  AssortmentTypeUpdate,
+  GostCreate,
+  GostOut,
+  GostUpdate,
   MaterialCategoryCreate,
   MaterialCategoryOut,
   MaterialCategoryUpdate
@@ -277,7 +283,7 @@ onMounted(loadOptions)
           {{ t('resources.material.subtitle') }}
         </p>
       </div>
-      <div class="badge" :class="isCreate ? 'badge-success' : (readOnly ? 'badge-ghost' : 'badge-info')">
+      <div class="badge" :class="isCreate ? 'badge-success' : (readOnly ? 'badge-ghost' : 'badge-accent')">
         {{ isCreate ? t('common.create') : (readOnly ? t('common.view') : t('common.edit')) }}
       </div>
     </div>
