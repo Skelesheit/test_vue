@@ -1,6 +1,14 @@
 import type {TranslationSchema} from './schema'
 
 const en: TranslationSchema = {
+    common: {
+        create: 'Create',
+        edit: 'Edit',
+        view: 'View',
+        save: 'Save',
+        cancel: 'Cancel',
+        select_placeholder: 'Select…',
+    },
     welcome: 'Welcome',
     register: 'Sign up',
     register_button: 'Register',
@@ -193,15 +201,39 @@ const en: TranslationSchema = {
             assortment: 'Assortment',
         },
         material: {
-            id: "Id",
+            id: "ID",
+
+            assortment_type: "Assortment type",
+            quantity: "Quantity",
+            price: "Price, RUB",
+            DB: "D/B, mm",
+            height: "Height",
+            length: "Length",
+            strength: "Width",
+
             brand: "Brand",
-            dense: "Dense",
+            dense: "Density",
             hardness: "Hardness",
             tear_resistance: "Tear resistance",
             elongation: "Elongation",
             category: "Category",
             filter_placeholder: "search by brand",
-            no_data: "no materials",
+            no_data: "No materials",
+
+            comment: "Comment",
+            comment_en: "Comment (EN)",
+
+            create_title: "Material",
+            edit_title: "Material",
+            subtitle: "Fill in material parameters",
+
+            sections: {
+                classification: "Classification",
+                identity: "Identity",
+                geometry: "Geometry",
+                mechanics: "Mechanical properties",
+                notes: "Notes",
+            },
         },
         material_category: {
             id: "Id",

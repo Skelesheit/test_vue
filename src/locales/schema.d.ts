@@ -1,4 +1,13 @@
 export interface TranslationSchema {
+    common: {
+        create: string
+        edit: string
+        view: string
+        save: string
+        cancel: string
+        select_placeholder: string
+    }
+
     welcome: string
     register: string
     register_button: string
@@ -180,6 +189,8 @@ export interface TranslationSchema {
             close: string,
         },
 
+
+
         navigation : {
             shortName: string,
             menu: string,
@@ -198,16 +209,41 @@ export interface TranslationSchema {
             assortment: string,
         },
         material: {
-            id: string;
-            brand: string;
-            dense: string;
-            hardness: string;
-            tear_resistance: string;
-            elongation: string;
-            category: string;
-            filter_placeholder: string;
-            no_data: string;
-        };
+            id: string,
+            no_data: string,
+
+            brand: string,
+            dense: string,
+            hardness: string,
+            tear_resistance: string,
+            elongation: string,
+            category: string,
+            filter_placeholder: string,
+            create_title: string
+            edit_title: string
+            subtitle: string
+
+            assortment_type: string
+            quantity: string
+            price: string
+
+            DB: string
+            height: string
+            length: string
+            strength: string
+
+            comment: string
+            comment_en: string
+
+            sections: {
+                classification: string
+                identity: string
+                geometry: string
+                mechanics: string
+                notes: string
+            }
+        }
+
         material_category: {
             id: string;
             name: string;

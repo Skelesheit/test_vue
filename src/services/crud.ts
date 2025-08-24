@@ -44,6 +44,6 @@ export function createCrudApi<Out, Create, Update>(base: string) {
         update: (id: number, payload: Update) =>
             handle<Out>(request(`${base}/${id}`, { method: 'PUT', body: JSON.stringify(payload) })),
         delete: (id: number) =>
-            handle<void>(request(`${base}/${id}`, { method: 'DELETE' })),
+            handle<boolean>(request(`${base}/${id}`, { method: 'DELETE' })),
     }
 }

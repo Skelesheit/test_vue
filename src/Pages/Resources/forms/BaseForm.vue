@@ -12,7 +12,7 @@
 
       <!-- Body -->
       <div class="space-y-4">
-        <component v-if="component" :is="component" ref="childRef" />
+        <component v-if="component" :is="component" ref="childRef" :mode="mode" />
       </div>
 
       <!-- Footer / Actions -->

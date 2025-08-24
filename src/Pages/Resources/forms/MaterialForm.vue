@@ -1,166 +1,183 @@
-<template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4"
-       :class="{ 'opacity-60 pointer-events-none select-none': readOnly }">
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.brand') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model="vm.brand"
-             type="text"
-             required
-      />
-    </label>
-
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.category') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model.number="vm.category_id"
-             type="number"
-             min="0"
-             required
-      />
-    </label>
-
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.dense') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model.number="vm.dense"
-             type="number"
-             step="0.001"
-             min="0"
-             required
-      />
-    </label>
-
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.hardness') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model.number="vm.hardness"
-             type="number"
-             step="0.001"
-             min="0"
-             required
-      />
-    </label>
-
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.tear_resistance') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model.number="vm.tear_resistance"
-             type="number"
-             step="0.001"
-             min="0"
-             required
-      />
-    </label>
-
-    <label class="form-control">
-      <span class="label-text">{{ t('resources.material.elongation') }}</span>
-      <input class="input input-bordered"
-             :readonly="readOnly"
-             v-model.number="vm.elongation"
-             type="number"
-             step="0.001"
-             min="0"
-             required
-      />
-    </label>
-  </div>
-</template>
-
 <script setup lang="ts">
-import {reactive, ref} from 'vue'
+import {computed, isReadonly, onMounted, reactive, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import type {FormAdapter} from '@/Pages/Resources/forms/form.adapter'
 import {FormMode} from '@/services/enums'
 import {createCrudApi} from '@/services/crud'
 import type {MaterialCreate, MaterialOut, MaterialUpdate} from '@/services/interfaces/resources/material.interface'
 import {useNotify} from "@/composables/useNotify";
+import {
+  AssortmentTypeCreate,
+  AssortmentTypeOut, AssortmentTypeUpdate, GostCreate, GostOut, GostUpdate,
+  MaterialCategoryCreate,
+  MaterialCategoryOut,
+  MaterialCategoryUpdate
+} from "@/services/interfaces/resources";
 
 const {success: successNotify} = useNotify()
 
 const {t} = useI18n()
-const readOnly = ref(true)
+// const readOnly = ref(true)
+
+const props = withDefaults(defineProps<{
+  mode: FormMode
+}>(), {
+  mode: FormMode.VIEW, // дефолт, если родитель не передал
+})
+
+let readOnly =  props.mode === FormMode.VIEW
+let isCreate = computed(() => props.mode === FormMode.CREATE)
+
+// ОБЪЯВЛЯЕМ CRUD API - юзаем их!
+const materialApi = createCrudApi<
+    MaterialOut,
+    MaterialCreate,
+    MaterialUpdate
+>('resources/materials')
+
+const materialCategoryApi = createCrudApi<
+    MaterialCategoryOut,
+    MaterialCategoryCreate,
+    MaterialCategoryUpdate
+>('resources/material-categories')
+
+const assortmentTypeApi = createCrudApi<
+    AssortmentTypeOut,
+    AssortmentTypeCreate,
+    AssortmentTypeUpdate
+>('resources/material-categories')
+
+const gostApi = createCrudApi<
+    GostOut,
+    GostCreate,
+    GostUpdate
+>('resources/gosts')
+
+// ====== справочники (списки для селекторов)
+let categories = ref<MaterialCategoryOut[]>([])
+let assortTypes = ref<AssortmentTypeOut[]>([])
+let gosts = ref<GostOut[]>([])
+// ещё не знаю - нужны ли мне госты? Скорее да...
+
+// ===== выбранные id из селекторов ( а нужны ли ??)
+
+let selectedCategoryId = ref<number | null>(null)
+let selectedAssortTypeId = ref<number | null>(null)
+let selectedGostId = ref<number | null>(null)
+
 
 // ViewModel — подстрой под реальные поля Material*, при необходимости
-export type MaterialVM = {
-  brand?: string
-  category_id?: number | null
-  dense?: number | null
-  hardness?: number | null
-  tear_resistance?: number | null
-  elongation?: number | null
+type MaterialVM = {
+  id: number | null
+  brand: string
+  DB: number | null
+  height: number | null
+  strength: number | null
+  length: number | null
+  dense: number | null
+  hardness: number | null
+  tear_resistance: number | null
+  elongation: number | null
+  quantity: number | null
+  price: number | null
+  material_category_id: number | null
+  assortment_type_id: number | null
+  category: MaterialCategoryOut | null
+  assortment_type: AssortmentTypeOut | null
+  comment: string | null
+  comment_en: string | null
 }
 
+
 const vm = reactive<MaterialVM>({
+  id: null,
   brand: '',
-  category_id: null,
+  DB: null,
+  height: null,
+  strength: null,
+  length: null,
   dense: null,
   hardness: null,
   tear_resistance: null,
   elongation: null,
+  quantity: null,
+  price: null,
+  material_category_id: null,
+  assortment_type_id: null,
+  category: null,
+  assortment_type: null,
+  comment: null,
+  comment_en: null,
 })
 
-// API на твоей фабрике
-const materialApi = createCrudApi<MaterialOut, MaterialCreate, MaterialUpdate>('resources/materials')
+
 
 // --- сериализация ---
+// я так понимаю это view
 function toVM(dto: MaterialOut): MaterialVM {
   return {
-    // Приведи к точным полям из твоего Out
-    // @ts-ignore
-    brand: (dto as any).brand ?? (dto as any).name ?? '',
-    // @ts-ignore
-    category_id: (dto as any).category_id ?? null,
-    // @ts-ignore
-    dense: (dto as any).dense ?? null,
-    // @ts-ignore
-    hardness: (dto as any).hardness ?? null,
-    // @ts-ignore
-    tear_resistance: (dto as any).tear_resistance ?? null,
-    // @ts-ignore
-    elongation: (dto as any).elongation ?? null,
+    id: dto.id ?? null,
+    DB: dto.DB ?? 0,
+    height: dto.height ?? 0,
+    strength: dto.strength ?? 0,
+    length: dto.length ?? 0,
+    brand: dto.brand ?? '',
+    material_category_id: dto.material_category_id ?? null,
+    dense: dto.dense ?? 0,
+    hardness: dto.hardness ?? null,
+    tear_resistance: dto.tear_resistance ?? 0,
+    elongation: dto.elongation ?? 0,
+    quantity: dto.elongation ?? 0,
+    price: dto.elongation ?? 0,
+    assortment_type_id: dto.elongation ?? null,
+    category: dto.category ?? null,
+    assortment_type: dto.assortment_type ?? null,
+    comment: dto.comment ?? null,
+    comment_en: dto.comment_en ?? null,
   }
 }
 
 function toCreate(v: MaterialVM): MaterialCreate {
   return {
-    // Заполни точными полями MaterialCreate
-    // @ts-ignore
     brand: v.brand,
-    // @ts-ignore
-    category_id: v.category_id,
-    // @ts-ignore
+
+    DB: v.DB,
+    height: v.height,
+    strength: v.strength,
+    length: v.length,
+
     dense: v.dense,
-    // @ts-ignore
     hardness: v.hardness,
-    // @ts-ignore
     tear_resistance: v.tear_resistance,
-    // @ts-ignore
     elongation: v.elongation,
-  } as unknown as MaterialCreate
+
+    quantity: v.quantity,
+    price: v.price,
+
+    comment: v.comment,
+    comment_en: v.comment_en,
+
+    material_category_id: v.material_category_id,
+    assortment_type_id: v.assortment_type_id,
+  } as MaterialCreate
 }
 
 function toUpdate(v: MaterialVM): MaterialUpdate {
-  return {
-    // Заполни точными полями MaterialUpdate
-    // @ts-ignore
-    brand: v.brand,
-    // @ts-ignore
-    category_id: v.category_id,
-    // @ts-ignore
-    dense: v.dense,
-    // @ts-ignore
-    hardness: v.hardness,
-    // @ts-ignore
-    tear_resistance: v.tear_resistance,
-    // @ts-ignore
-    elongation: v.elongation,
-  } as unknown as MaterialUpdate
+  const p: MaterialUpdate = {}
+  p.brand = vm.brand.trim()
+  if (vm.DB != null) p.DB = vm.DB
+  if (vm.height != null) p.height = vm.height
+  if (vm.strength != null) p.strength = vm.strength
+  if (vm.length != null) p.length = vm.length
+  if (vm.dense != null) p.dense = vm.dense
+  if (vm.hardness != null) p.hardness = vm.hardness
+  if (vm.tear_resistance != null) p.tear_resistance = vm.tear_resistance
+  if (vm.elongation != null) p.elongation = vm.elongation
+  if (vm.quantity != null) p.quantity = vm.quantity
+  if (vm.price != null) p.price = vm.price
+  if (vm.material_category_id != null) p.material_category_id = vm.material_category_id
+  if (vm.assortment_type_id != null) p.assortment_type_id = vm.assortment_type_id
+  return p
 }
 
 // --- CRUD ---
@@ -170,7 +187,7 @@ async function load(id: number) {
 }
 
 function setMode(mode: FormMode) {
-  readOnly.value = (mode === FormMode.VIEW)
+  readOnly = (mode === FormMode.VIEW)
 }
 
 function getTitleKey() {
@@ -207,8 +224,302 @@ async function remove(id: number): Promise<boolean> {
   return await materialApi.delete(id) !== null
 }
 
+
 // expose адаптер наружу
 defineExpose<FormAdapter<MaterialVM, MaterialCreate, MaterialUpdate, MaterialOut>>({
   getTitleKey, setMode, getVM, setVM, load, validate, create, update, remove,
 })
+
+
+async function loadOptions() {
+  const [cats, types] = await Promise.all([
+    materialCategoryApi.list(),
+    assortmentTypeApi.list(),
+  ])
+  categories.value = cats ?? []
+  assortTypes.value = types ?? []
+
+  if (vm.assortment_type_id) {
+    await loadGostsForType()
+  }
+}
+
+async function loadGostsForType() {
+  gosts.value = await gostApi.list() ?? []
+  return gosts.value
+}
+
+// тут будем работать с модалками и селектами и прочим
+function openCreateCategory() {
+// TODO: открыть модалку; после успешного создания -> loadOptions()
+}
+
+function openCreateAssortmentType() {
+// TODO: открыть модалку; после успешного создания -> loadOptions()
+}
+
+function onCancel() {
+  // закрыть/emit('cancel') — как принято
+}
+
+onMounted(loadOptions)
+
 </script>
+
+<template>
+    <!-- Шапка -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-semibold">
+          {{ isCreate ? t('resources.material.create_title') : t('resources.material.edit_title') }}
+        </h2>
+        <p class="text-sm text-base-content/60">
+          {{ t('resources.material.subtitle') }}
+        </p>
+      </div>
+      <div class="badge" :class="isCreate ? 'badge-success' : (readOnly ? 'badge-ghost' : 'badge-info')">
+        {{ isCreate ? t('common.create') : (readOnly ? t('common.view') : t('common.edit')) }}
+      </div>
+    </div>
+
+    <!-- Секция: Классификация -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.material.sections.classification') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- Категория материала -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.category') }}</span>
+          <div class="join w-full">
+            <select
+                class="select select-bordered join-item w-full"
+                :disabled="readOnly"
+                v-model.number="vm.material_category_id"
+                required
+            >
+              <option :value="null" disabled>{{ t('common.select_placeholder') }}</option>
+              <option v-for="opt in categories" :key="opt.id" :value="opt.id">
+                {{ opt.id }} · {{ opt.name }}
+              </option>
+            </select>
+            <button
+                v-if="!readOnly"
+                type="button"
+                class="btn btn-success join-item"
+                :title="t('resources.material.add_category')"
+                @click="openCreateCategory"
+            >+</button>
+          </div>
+        </label>
+
+        <!-- Тип ассортимента -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.assortment_type') }}</span>
+          <div class="join w-full">
+            <select
+                class="select select-bordered join-item w-full"
+                :disabled="readOnly"
+                v-model.number="vm.assortment_type_id"
+                required
+            >
+              <option :value="null" disabled>{{ t('common.select_placeholder') }}</option>
+              <option v-for="opt in assortTypes" :key="opt.id" :value="opt.id">
+                {{ opt.id }} · {{ opt.name }}
+              </option>
+            </select>
+            <button
+                v-if="!readOnly"
+                type="button"
+                class="btn btn-success join-item"
+                :title="t('resources.material.add_assortment_type')"
+                @click="openCreateAssortmentType"
+            >+</button>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- Секция: Идентификация -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.material.sections.identity') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.brand') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.trim="vm.brand"
+              type="text"
+              required
+          />
+        </label>
+
+        <!-- quantity -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.quantity') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.quantity"
+              type="number" step="1" min="0"
+          />
+        </label>
+
+        <!-- price -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.price') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.price"
+              type="number" step="0.01" min="0"
+          />
+        </label>
+      </div>
+    </section>
+
+    <!-- Секция: Геометрия -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.material.sections.geometry') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- DB -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.DB') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.DB"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- height -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.height') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.height"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- length -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.length') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.length"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+      </div>
+    </section>
+
+    <!-- Секция: Механические свойства -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.material.sections.mechanics') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- strength -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.strength') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.strength"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- dense -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.dense') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.dense"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- hardness -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.hardness') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.hardness"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- tear_resistance -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.tear_resistance') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.tear_resistance"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+
+        <!-- elongation -->
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.elongation') }}</span>
+          <input
+              class="input input-bordered"
+              :readonly="readOnly"
+              v-model.number="vm.elongation"
+              type="number" step="0.001" min="0"
+          />
+        </label>
+      </div>
+    </section>
+
+    <!-- Секция: Комментарии -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.material.sections.notes') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.comment') }}</span>
+          <textarea
+              class="textarea textarea-bordered min-h-24"
+              :readonly="readOnly"
+              v-model.trim="vm.comment"
+          />
+        </label>
+
+        <label class="form-control">
+          <span class="label-text">{{ t('resources.material.comment_en') }}</span>
+          <textarea
+              class="textarea textarea-bordered min-h-24"
+              :readonly="readOnly"
+              v-model.trim="vm.comment_en"
+          />
+        </label>
+      </div>
+    </section>
+</template>
+
+

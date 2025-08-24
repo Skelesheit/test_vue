@@ -1,6 +1,14 @@
 import type { TranslationSchema } from './schema'
 
 const ru: TranslationSchema = {
+    common: {
+        create: 'Создать',
+        edit: 'Изменить',
+        view: 'Просмотр',
+        save: 'Сохранить',
+        cancel: 'Отмена',
+        select_placeholder: 'Выберите…',
+    },
     welcome: 'Добро пожаловать',
     register: 'Регистрация',
     register_button: 'Зарегистрироваться',
@@ -197,6 +205,15 @@ const ru: TranslationSchema = {
         },
         material: {
             id: "ID",
+
+            assortment_type: "тип ассортимента",
+            quantity: "количество",
+            price: "Цена, руб.",
+            DB: "D/B, мм",
+            height: "высота",
+            length: "длина",
+            strength: "ширина",
+
             brand: "Бренд",
             dense: "Плотность",
             hardness: "Твёрдость",
@@ -205,6 +222,21 @@ const ru: TranslationSchema = {
             category: "Категория",
             filter_placeholder: "поиск по бренду",
             no_data: "Нет материалов",
+
+            comment: 'Комментарий',
+            comment_en: 'Комментарий (EN)',
+
+            create_title: 'Материал',
+            edit_title: 'Материал',
+            subtitle: 'Заполните параметры материала',
+
+            sections: {
+                classification: 'Классификация',
+                identity: 'Идентификация',
+                geometry: 'Геометрия',
+                mechanics: 'Механические свойства',
+                notes: 'Примечания',
+            },
         },
         material_category: {
             id: "ID",

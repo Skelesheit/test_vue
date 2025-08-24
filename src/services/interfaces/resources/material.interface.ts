@@ -5,7 +5,7 @@ import {AssortmentTypeOut} from "@/services/interfaces/resources/assortment-type
 export interface MaterialBase {
     brand: string;
 
-    B_D: number;
+    DB: number;
     height: number;
     strength: number;
     length: number;
@@ -31,7 +31,7 @@ export interface MaterialCreate extends MaterialBase {
 export interface MaterialUpdate {
     brand?: string | null;
 
-    B_D?: number | null;
+    DB?: number | null;
     height?: number | null;
     strength?: number | null;
     length?: number | null;
