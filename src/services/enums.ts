@@ -32,9 +32,9 @@ export enum MemberStatus {
 }
 
 export enum MetalType {
-    NONFERROUS = "NONFERROUS",
-    FERROUS = "FERROUS",
-    NONMETALLIC = "NONMETALLIC"
+    NONFERROUS = "Металлы цветные",
+    FERROUS = "Металлы черные",
+    NONMETALLIC = "Неметаллические материалы"
 }
 
 export enum FormMode {

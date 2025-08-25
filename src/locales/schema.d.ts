@@ -252,6 +252,9 @@ export interface TranslationSchema {
             name: string;
             material_type: string;
             no_data: string;
+
+            create_title: string,
+            title: string,
         };
         operation_type: {
             id: string;
@@ -312,11 +315,18 @@ export interface TranslationSchema {
             id: string;
             number: string;
             no_data: string;
+
+            create_title: string;
+            title: string,
+            name: string,
+
         };
         assortment_type: {
             id: string;
             name: string;
             no_data: string;
+
+            create_title: string,
         };
         gost_assortment: {
             id: string;

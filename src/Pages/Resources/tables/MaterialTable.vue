@@ -219,9 +219,9 @@ function humanMetal(t?: MetalType | null) {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full flex flex-col gap-y-6 items-center">
     <!-- topbar -->
-    <div class="flex items-center justify-between mb-3">
+    <div class="w-full flex items-center justify-between mb-3">
       <div class="text-lg font-semibold">Материалы</div>
       <button class="btn btn-primary btn-sm gap-2"
               @click="openCreate(MaterialForm, ModelType.Material)"
@@ -424,6 +424,18 @@ function humanMetal(t?: MetalType | null) {
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="join items-center">
+      <input
+          class="join-item btn btn-square"
+          type="radio"
+          name="options"
+          aria-label="1"
+          checked />
+      <input class="join-item btn btn-square" type="radio" name="options" aria-label="2" />
+      <input class="join-item btn btn-square" type="radio" name="options" aria-label="3" />
+      <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
     </div>
 
     <BaseForm

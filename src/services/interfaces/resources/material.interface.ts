@@ -21,7 +21,7 @@ export interface MaterialBase {
     comment?: string | null;
     comment_en?: string | null;
 
-    material_category_id: number;
+    category_id: number;
     assortment_type_id: number;
 }
 
@@ -47,7 +47,7 @@ export interface MaterialUpdate {
     comment?: string | null;
     comment_en?: string | null;
 
-    material_category_id?: number | null;
+    category_id?: number | null;
     assortment_type_id?: number | null;
 }
 

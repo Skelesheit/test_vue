@@ -242,7 +242,9 @@ const en: TranslationSchema = {
             id: "Id",
             name: "Name",
             material_type: "Material type",
-            no_data: "there isn't your categories"
+            no_data: "there isn't your categories",
+            title: 'Material category',
+            create_title: 'New category',
         },
         operation_type: {
             id: "Id",
@@ -303,11 +305,17 @@ const en: TranslationSchema = {
             id: "Id",
             number: "Number",
             no_data: "there isn't your GOST",
+
+            create_title: 'New GOST',
+            title: 'GOST',
+            name: 'Name',
         },
         assortment_type: {
             id: "Id",
             name: "Name",
             no_data: "there isn't your assortment type",
+
+            create_title: 'New assortment type',
         },
         gost_assortment: {
             id: "Id",

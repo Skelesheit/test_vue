@@ -246,6 +246,8 @@ const ru: TranslationSchema = {
             name: "Название",
             material_type: "Тип материала",
             no_data: "Нет категорий материалов",
+            title: 'Категория материалов',
+            create_title: 'Новая категория',
         },
         operation_type: {
             id: "ID",
@@ -306,11 +308,17 @@ const ru: TranslationSchema = {
             id: "ID",
             number: "Номер",
             no_data: "Нет личных ГОСТ-ов",
+
+            create_title: 'Новый ГОСТ',
+            title: 'ГОСТ',
+            name: 'Название',
         },
         assortment_type: {
             id: "ID",
             name: "Название",
             no_data: "Нет личных типов ассортимента",
+
+            create_title: 'Новый тип ассортимента',
         },
         gost_assortment: {
             id: "ID",
