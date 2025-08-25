@@ -16,6 +16,8 @@
     --color-success: #36D399;
     --color-warning: #FBBD23;
     --color-error: #F87272;
+    --tooltip-color: rgba(17, 24, 39, 0.92); /* почти #111827 */
+    --tooltip-text-color: #ffffff;
 }
 
 
@@ -34,10 +36,21 @@
     --color-success: #36D399;
     --color-warning: #FBBD23;
     --color-error: #F87272;
+    --tooltip-color: rgba(243, 244, 246, 0.92); /* почти #f3f4f6 */
+    --tooltip-text-color: #111827;
 }
 
 .bg-color-header{
     background-color: var(--color-bg-header);
 }
 
+/* Применяем к daisyUI tooltip (он рисуется через ::before/::after) */
+.tooltip:before {
+    background-color: var(--tooltip-color) !important;
+    color: var(--tooltip-text-color) !important;
+}
+.tooltip:after {
+    /* хвостик */
+    background-color: var(--tooltip-color) !important;
+}
 

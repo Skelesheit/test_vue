@@ -136,7 +136,7 @@ function toVM(dto: MaterialOut): MaterialVM {
     elongation: dto.elongation ?? 0,
     quantity: dto.elongation ?? 0,
     price: dto.elongation ?? 0,
-    assortment_type_id: dto.elongation ?? null,
+    assortment_type_id: dto.assortment_type_id ?? null,
     category: dto.category ?? null,
     assortment_type: dto.assortment_type ?? null,
     comment: dto.comment ?? null,
@@ -169,7 +169,7 @@ function toCreate(v: MaterialVM): MaterialCreate {
   } as MaterialCreate
 }
 
-function toUpdate(v: MaterialVM): MaterialUpdate {
+function toUpdate(): MaterialUpdate {
   const p: MaterialUpdate = {}
   p.brand = vm.brand.trim()
   if (vm.DB != null) p.DB = vm.DB
@@ -184,6 +184,8 @@ function toUpdate(v: MaterialVM): MaterialUpdate {
   if (vm.price != null) p.price = vm.price
   if (vm.category_id != null) p.category_id = vm.category_id
   if (vm.assortment_type_id != null) p.assortment_type_id = vm.assortment_type_id
+  if (vm.comment != null) p.comment = vm.comment
+  if (vm.comment_en != null) p.comment_en = vm.comment_en
   return p
 }
 

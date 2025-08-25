@@ -165,6 +165,14 @@ export interface TranslationSchema {
         generic: string
     }
     resources: {
+        reference: {
+            title: string,
+            search_placeholder: string,
+            create_category: string,
+            create_assortment: string,
+            create_gost: string,
+            empty: string,
+        },
         notifications: {
             created: string
             updated: string
@@ -182,6 +190,8 @@ export interface TranslationSchema {
             delete: string,
             edit: string,
             view_tooltip: string
+            edit_tooltip: string,
+            delete_tooltip: string,
             refresh: string,
             actions: string,
             loading: string,
@@ -255,6 +265,12 @@ export interface TranslationSchema {
 
             create_title: string,
             title: string,
+
+            material_type_options: {
+                FERROUS: string,
+                NONFERROUS: string,
+                NONMETALLIC: string,
+            },
         };
         operation_type: {
             id: string;

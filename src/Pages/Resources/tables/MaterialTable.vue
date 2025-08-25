@@ -2,6 +2,7 @@
 import {ref, onMounted, watch, computed} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {
+  ListTree,
   ArrowUpDown,
   ArrowUpAZ,
   ArrowDownAZ,
@@ -20,6 +21,15 @@ import {
 import {MetalType} from '@/services/enums'
 import MaterialForm from "@/Pages/Resources/forms/MaterialForm.vue"
 import {ModelType} from "@/services/enums"
+import ReferenceDirectoryModal from '@/Pages/Resources/forms/ReferenceDirectoryModal.vue'
+
+const openRef = ref(false)
+function onRefChanged() {
+  // если надо — перезагрузить таблицу или опции селектов
+  // reloadMaterials()
+  // reloadOptions()
+}
+
 // 👇 твой crud — не трогаю, просто вызываю
 import {createCrudApi} from '@/services/crud'
 // CRUD API
@@ -214,14 +224,14 @@ async function confirmDelete() {
 }
 function humanMetal(t?: MetalType | null) {
   if (!t) return '—'
-  return t === 'FERROUS' ? 'Черные' : t === 'NONFERROUS' ? 'Цветные' : 'Неметаллич.'
+  return t.toString()
 }
 </script>
 
 <template>
   <div class="w-full flex flex-col gap-y-6 items-center">
     <!-- topbar -->
-    <div class="w-full flex items-center justify-between mb-3">
+    <div class="w-full flex items-center justify-between mb-4">
       <div class="text-lg font-semibold">Материалы</div>
       <button class="btn btn-primary btn-sm gap-2"
               @click="openCreate(MaterialForm, ModelType.Material)"
@@ -364,7 +374,13 @@ function humanMetal(t?: MetalType | null) {
             </div>
           </th>
 
-          <th class="sticky right-0 z-30 bg-base-100 sticky-right-shadow"></th>
+          <th class="sticky right-0 z-30 bg-base-100 sticky-right-shadow">
+            <div class="flex flex-col gap-2  items-center">
+              <button class="btn btn-ghost" @click="openRef = true" :title="t('resources.reference.title')">
+                <ListTree class="w-4 h-4 mr-1"/>{{ t('resources.reference.title') }}
+              </button>
+            </div>
+          </th>
         </tr>
         </thead>
 
@@ -407,14 +423,14 @@ function humanMetal(t?: MetalType | null) {
                 <Eye class="w-4 h-4"/>
                 View
               </button>
-              <button class="btn btn-xs btn-accent gap-1"
-                      :data-tip="$t('resources.table.edit')"
+              <button class="btn btn-xs btn-accent gap-1 tooltip"
+                      :data-tip="$t('resources.table.edit_tooltip')"
                       @click="openEdit(MaterialForm, ModelType.Material, m.id)">
                 <Edit3 class="w-4 h-4"/>
                 Edit
               </button>
-              <button class="btn btn-xs btn-error gap-1"
-                      :data-tip="$t('resources.table.delete')"
+              <button class="btn btn-xs btn-error gap-1 tooltip"
+                      :data-tip="$t('resources.table.delete_tooltip')"
                       @click="askDelete(m)">
                 <Trash2 class="w-4 h-4"/>
                 Del
@@ -438,6 +454,7 @@ function humanMetal(t?: MetalType | null) {
       <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
     </div>
 
+    <!--Modal: Материал -->
     <BaseForm
         :mode="mode"
         :model="model!"
@@ -460,12 +477,17 @@ function humanMetal(t?: MetalType | null) {
         :text="confirmText"
         @confirm="confirmDelete"
     />
+    <!--Modal: Справочник -->
+    <ReferenceDirectoryModal
+        v-model:open="openRef"
+        @changed="onRefChanged" />
   </div>
 </template>
 
 <style scoped>
+@reference "tailwindcss";
 .th-head {
-  @apply flex items-center gap-2;
+  @apply flex items-center;
 }
 
 /* тень слева у закреплённой колонки, чтобы не «переливалось» */

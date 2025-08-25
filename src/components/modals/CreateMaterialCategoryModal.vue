@@ -49,7 +49,7 @@ const MATERIAL_TYPES = [
 const materialTypeOptions = computed(() =>
     MATERIAL_TYPES.map(v => ({
       value: v,
-      label: t(`resources.material_category.material_type_options.${v}`, v),
+      label: v.toString()
     }))
 )
 

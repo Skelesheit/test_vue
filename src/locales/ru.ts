@@ -163,6 +163,14 @@ const ru: TranslationSchema = {
         generic: 'Что-то пошло не так',
     },
     resources: {
+        reference: {
+            title: 'Справочник',
+            search_placeholder: 'Поиск…',
+            create_category: 'Создать категорию',
+            create_assortment: 'Создать тип ассортимента',
+            create_gost: 'Создать ГОСТ',
+            empty: 'Нет данных',
+        },
         dialog: {
             cancel: "Отменить",
             delete_text: "Вы действительно хотите удалить?",
@@ -179,6 +187,8 @@ const ru: TranslationSchema = {
             create: "Создать",
             edit: "Редактировать",
             view_tooltip: "Просмотр",
+            edit_tooltip: "Редактирование",
+            delete_tooltip: "Удаление",
             refresh: "Обновить",
             actions: "Действия",
             loading: "Загрузка",
@@ -248,6 +258,12 @@ const ru: TranslationSchema = {
             no_data: "Нет категорий материалов",
             title: 'Категория материалов',
             create_title: 'Новая категория',
+
+            material_type_options: {
+                FERROUS: "Металлы черные",
+                NONFERROUS: "Металлы цветные",
+                NONMETALLIC: "Неметаллические материалы",
+            },
         },
         operation_type: {
             id: "ID",

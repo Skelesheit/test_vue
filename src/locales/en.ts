@@ -160,6 +160,14 @@ const en: TranslationSchema = {
         generic: 'Something went wrong',
     },
     resources: {
+        reference: {
+            title: 'Directory',
+            search_placeholder: 'Search…',
+            create_category: 'Create category',
+            create_assortment: 'Create assortment type',
+            create_gost: 'Create GOST',
+            empty: 'No data',
+        },
         dialog: {
             cancel: "Cancel",
             delete_text: "Are you want to delete model?",
@@ -176,6 +184,8 @@ const en: TranslationSchema = {
             create: "Create",
             edit: "Edit",
             view_tooltip: "View",
+            edit_tooltip: "Edit",
+            delete_tooltip: "Delete",
             refresh: "Refresh",
             actions: "Action",
             loading: "Loading",
@@ -245,6 +255,12 @@ const en: TranslationSchema = {
             no_data: "there isn't your categories",
             title: 'Material category',
             create_title: 'New category',
+
+            material_type_options: {
+                FERROUS: "FERROUS",
+                NONFERROUS: "NONFERROUS",
+                NONMETALLIC: "NONMETALLIC",
+            },
         },
         operation_type: {
             id: "Id",
