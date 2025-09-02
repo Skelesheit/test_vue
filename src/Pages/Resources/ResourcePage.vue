@@ -34,7 +34,6 @@ let formMode:  FormMode | null = FormMode.HIDDEN
         Choose model
       </div>
       <div v-else>
-        <h2 class="text-2xl font-bold mb-4">{{ $t(`resources.navigation.${currentModelType}`) }}</h2>
         <TableBase
         class="p-2 "
         :model-type="currentModelType"

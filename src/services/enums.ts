@@ -45,16 +45,8 @@ export enum FormMode {
 }
 
 export enum ModelType {
-    MaterialCategory = 'material_category',
     Material = 'material',
-    OperationType = 'operation_type',
-    Method = 'method',
-    MachineType = 'machine_type',
     Machine = 'machine',
     Tooling = 'tooling',
     Tool = 'tool',
-    Gost = 'gost',
-    AssortmentType = 'assortment_type',
-    GostAssortment = 'gost_assortment',
-    Assortment = 'assortment'
 }

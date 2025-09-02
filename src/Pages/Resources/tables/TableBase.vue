@@ -11,8 +11,7 @@ const props = defineProps<{
 
 // Ленивые компоненты
 const MaterialTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/MaterialTable.vue'))
-const GostTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/GostTable.vue'))
-const MachineTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/MachineTable.vue'))
+const MachineTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/NewMachineTable.vue'))
 // ... остальные
 
 watch(currentModelType, (newVal, oldVal) => {
@@ -29,7 +28,6 @@ watch(currentModelType, (newVal, oldVal) => {
     <div v-if="!props.modelType">Выберите модель</div>
 
     <Component :is="MaterialTable" v-else-if="props.modelType == ModelType.Material" />
-    <Component :is="GostTable" v-else-if="props.modelType == ModelType.Gost" />
     <Component :is="MachineTable" v-else-if="props.modelType == ModelType.Machine" />
     <!-- остальные подрубаем ... -->
   </main>

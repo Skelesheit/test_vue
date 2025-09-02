@@ -8,7 +8,14 @@ const ru: TranslationSchema = {
         save: 'Сохранить',
         cancel: 'Отмена',
         select_placeholder: 'Выберите…',
+        any: 'Что нибудь',
+        actions: 'действия',
+        resetFilters: 'Сбросить',
+        nothingFound: 'Ничего не найдено',
     },
+
+
+
     welcome: 'Добро пожаловать',
     register: 'Регистрация',
     register_button: 'Зарегистрироваться',
@@ -219,6 +226,8 @@ const ru: TranslationSchema = {
             add_category: "Добавить категорию",
             add_assortment_type: "Добавить тип ассортимента",
 
+            material_category: "категория материала",
+            material_type: "Тип материала",
             assortment_type: "тип ассортимента",
             quantity: "количество",
             price: "Цена, руб.",
@@ -227,7 +236,7 @@ const ru: TranslationSchema = {
             length: "длина",
             strength: "ширина",
 
-            brand: "Бренд",
+            mark: "Марка",
             dense: "Плотность",
             hardness: "Твёрдость",
             tear_resistance: "Устойчивость к разрыву",
@@ -268,16 +277,19 @@ const ru: TranslationSchema = {
         operation_type: {
             id: "ID",
             name: "Название",
+            title: "Метод",
             no_data: "Нет собственных типов операций",
         },
         method: {
             id: "ID",
             name: "Название",
+            title: "Метод",
             operation_type_id: "ID операции",
             no_data: "Нет собственных методов материалов",
         },
         machine_type: {
             id: "ID",
+            title: "Метод",
             name: "Название",
             method_id: "ID метода",
             no_data: "Нет собственных типов станков",
@@ -293,6 +305,12 @@ const ru: TranslationSchema = {
             H: "H",
             D: "D",
             no_data: "Нет станков",
+            dialogs : {
+                createTitle: 'Создание станка',
+                editTitle: 'Редактирование станка',
+                viewTitle: 'Просмотр свойств станка',
+            }
+
         },
         tooling: {
             id: "ID",

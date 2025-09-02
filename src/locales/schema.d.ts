@@ -6,7 +6,13 @@ export interface TranslationSchema {
         save: string
         cancel: string
         select_placeholder: string
+        actions: string
+        any: string
+        resetFilters: string
+        nothingFound: string
     }
+
+
 
     welcome: string
     register: string
@@ -33,6 +39,11 @@ export interface TranslationSchema {
         title: string
         description: string
         open_email: string
+    }
+    notifications: {
+        created: string
+        updated: string
+        deleted: string
     }
 
     not_found: {
@@ -113,6 +124,7 @@ export interface TranslationSchema {
     personal_cabinet: {
         title: string
         profile: string
+
         assortment : {
             btn_text: string
         },
@@ -225,7 +237,7 @@ export interface TranslationSchema {
             add_category: string,
             add_assortment_type: string,
 
-            brand: string,
+            mark: string,
             dense: string,
             hardness: string,
             tear_resistance: string,
@@ -247,6 +259,9 @@ export interface TranslationSchema {
 
             comment: string
             comment_en: string
+
+            material_category: string,
+            material_type: string,
 
             sections: {
                 classification: string
@@ -274,18 +289,21 @@ export interface TranslationSchema {
         };
         operation_type: {
             id: string;
+            title: string;
             name: string;
             no_data: string;
         };
         method: {
             id: string;
+            title: string;
             name: string;
             operation_type_id: string;
             no_data: string;
         };
         machine_type: {
             id: string;
-            name: string;
+            name: string;title: string,
+
             method_id: string;
             no_data: string;
         };
@@ -300,6 +318,12 @@ export interface TranslationSchema {
             H: string;
             D: string;
             no_data: string;
+
+            dialogs: {
+                createTitle: string,
+                editTitle: string
+                viewTitle: string,
+            }
         };
         tooling: {
             id: string;

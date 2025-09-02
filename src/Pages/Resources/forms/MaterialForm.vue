@@ -77,7 +77,7 @@ const gostApi = createCrudApi<
 // ViewModel — подстрой под реальные поля Material*, при необходимости
 type MaterialVM = {
   id: number | null
-  brand: string
+  mark: string
   DB: number | null
   height: number | null
   strength: number | null
@@ -99,7 +99,7 @@ type MaterialVM = {
 
 const vm = reactive<MaterialVM>({
   id: null,
-  brand: '',
+  mark: '',
   DB: null,
   height: null,
   strength: null,
@@ -128,7 +128,7 @@ function toVM(dto: MaterialOut): MaterialVM {
     height: dto.height ?? 0,
     strength: dto.strength ?? 0,
     length: dto.length ?? 0,
-    brand: dto.brand ?? '',
+    mark: dto.mark ?? '',
     category_id: dto.category_id ?? null,
     dense: dto.dense ?? 0,
     hardness: dto.hardness ?? null,
@@ -146,7 +146,7 @@ function toVM(dto: MaterialOut): MaterialVM {
 
 function toCreate(v: MaterialVM): MaterialCreate {
   return {
-    brand: v.brand,
+    mark: v.mark,
 
     DB: v.DB,
     height: v.height,
@@ -171,7 +171,7 @@ function toCreate(v: MaterialVM): MaterialCreate {
 
 function toUpdate(): MaterialUpdate {
   const p: MaterialUpdate = {}
-  p.brand = vm.brand.trim()
+  p.mark = vm.mark.trim()
   if (vm.DB != null) p.DB = vm.DB
   if (vm.height != null) p.height = vm.height
   if (vm.strength != null) p.strength = vm.strength
@@ -212,7 +212,7 @@ function setVM(patch: Partial<MaterialVM>) {
 }
 
 function validate() {
-  return !!(vm.brand && vm.brand.trim().length)
+  return !!(vm.mark && vm.mark.trim().length)
 }
 
 async function create(): Promise<MaterialOut | void> {
@@ -223,7 +223,7 @@ async function create(): Promise<MaterialOut | void> {
 }
 
 async function update(id: number): Promise<MaterialOut | void> {
-  const dto = await materialApi.update(id, toUpdate(vm))
+  const dto = await materialApi.update(id, toUpdate())
   if (!dto) return
   Object.assign(vm, toVM(dto))
   return dto
@@ -383,11 +383,11 @@ onMounted(loadOptions)
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <label class="form-control">
-        <span class="label-text">{{ t('resources.material.brand') }}</span>
+        <span class="label-text">{{ t('resources.material.mark') }}</span>
         <input
             class="input input-bordered"
             :readonly="readOnly"
-            v-model.trim="vm.brand"
+            v-model.trim="vm.mark"
             type="text"
             required
         />

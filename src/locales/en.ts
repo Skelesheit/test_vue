@@ -224,7 +224,7 @@ const en: TranslationSchema = {
             length: "Length",
             strength: "Width",
 
-            brand: "Brand",
+            mark: "Mark",
             dense: "Density",
             hardness: "Hardness",
             tear_resistance: "Tear resistance",
@@ -233,12 +233,16 @@ const en: TranslationSchema = {
             filter_placeholder: "search by brand",
             no_data: "No materials",
 
+            material_type: "Material type",
+
             comment: "Comment",
             comment_en: "Comment (EN)",
 
             create_title: "Material",
             edit_title: "Material",
             subtitle: "Fill in material parameters",
+
+            material_category: "Material category",
 
             sections: {
                 classification: "Classification",

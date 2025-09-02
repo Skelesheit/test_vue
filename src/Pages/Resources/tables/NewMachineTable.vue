@@ -1,99 +1,101 @@
 <script setup lang="ts">
-import {ref, onMounted, watch, computed} from 'vue'
-import {useI18n} from 'vue-i18n'
 import {
-  ListTree,
-  ArrowUpDown,
-  ArrowUpAZ,
-  ArrowDownAZ,
-  PlusCircle,
-  Edit3,
-    Eye,
-  Trash2
-} from 'lucide-vue-next'
-import {
-  MaterialOut,
-  MaterialCreate,
-  MaterialUpdate,
-  MaterialCategoryOut,
-  AssortmentTypeOut,
+  MachineCreate,
+  MachineOut,
+  MachineTypeOut,
+  MachineTypeUpdate,
+  MachineTypeCreate,
+  MachineUpdate,
+  MethodUpdate,
+  MethodOut,
+  OperationTypeCreate,
+  OperationTypeOut,
+  MethodCreate,
+  OperationTypeUpdate,
 } from '@/services/interfaces/resources'
-import {MetalType} from '@/services/enums'
-import MaterialForm from "@/Pages/Resources/forms/MaterialForm.vue"
-import {ModelType} from "@/services/enums"
-import ReferenceDirectoryModal from '@/Pages/Resources/forms/ReferenceDirectoryModal.vue'
 
-const openRef = ref(false)
-function onRefChanged() {
-  // если надо — перезагрузить таблицу или опции селектов
-  // reloadMaterials()
-  // reloadOptions()
-}
-
-// 👇 твой crud — не трогаю, просто вызываю
+import {ModelType} from '@/services/enums'
 import {createCrudApi} from '@/services/crud'
-// CRUD API
-const materialApi = createCrudApi<
-    MaterialOut,
-    MaterialCreate,
-    MaterialUpdate
->('resources/materials',)
 
-// 👇 если используешь форму
+import {computed, onMounted, ref, watch} from 'vue'
+import {useI18n} from 'vue-i18n'
 import {useFormHost} from '@/Pages/Resources/forms/form.host'
 import {useNotify} from '@/composables/useNotify'
-import BaseForm from "@/Pages/Resources/forms/BaseForm.vue";
-import ConfirmDialog from "@/components/modals/dialog/ConfirmDialog.vue";
 
-// Нотификации
-const {error: notifyError, success: notifySuccess} = useNotify()
-// i18n
-const {t} = useI18n();
+import BaseForm from '@/Pages/Resources/forms/BaseForm.vue'
+import ConfirmDialog from '@/components/modals/dialog/ConfirmDialog.vue'
+
+import MachineForm from '@/Pages/Resources/forms/MachineForm.vue'
+
+import {ArrowDownAZ, ArrowUpAZ, ArrowUpDown, Edit3, Eye, ListTree, PlusCircle, Trash2,} from 'lucide-vue-next'
+import ReferenceDirectoryModal from "@/Pages/Resources/forms/ReferenceDirectoryModal.vue";
+
+// i18n & notifications
+const { t } = useI18n()
+const { error: notifyError, success: notifySuccess } = useNotify()
+
+// Хост формы
+const {
+  mode, busy, model, component, shellRef,
+  openView, openEdit, openCreate,
+  submit, remove, enterEdit, cancelEdit, close
+} = useFormHost()
+
+// CRUD APIs
+const machineApi = createCrudApi<
+    MachineOut,
+    MachineCreate,
+    MachineUpdate>
+('resources/machines')
+const machineTypeApi = createCrudApi<
+    MachineTypeOut,
+    MachineTypeUpdate,
+    MachineTypeCreate
+>('resources/machine-types')
+const methodApi = createCrudApi<
+    MethodOut,
+    MethodUpdate,
+    MethodCreate>('resources/methods')
+const operationTypeApi = createCrudApi<
+    OperationTypeOut,
+    OperationTypeUpdate,
+    OperationTypeCreate
+>('resources/operation-types')
+
+// Data
+const isLoading = ref(false)
+const machines = ref<MachineOut[]>([])
+
+// Lookups
+const machineTypes = ref<MachineTypeOut[]>([])
+const methods = ref<MethodOut[]>([])
+const operationTypes = ref<OperationTypeOut[]>([])
+
+/// -------------------
 
 type Dir = 'asc' | 'desc' | 'none'
 type SortItem = { field: string; dir: Dir }
 
-const rows = ref<MaterialOut[]>([])
+const rows = ref<MachineOut[]>([])
 const loading = ref(false)
 const err = ref<string | null>(null)
 
-const categories = ref<MaterialCategoryOut[]>([])
-const assortTypes = ref<AssortmentTypeOut[]>([])
 
 const filters = ref({
-  mark: '',
-  material_category_id: null as number | null,
-  assortment_type_id: null as number | null,
-  metal_types: [] as MetalType[],         // чекбоксы
-
+  name: '',
+  machine_type_id: null as number | null,
   // numeric колонки — min/max по column
-  DB: {min: null as number | null, max: null as number | null},
-  height: {min: null as number | null, max: null as number | null},
-  strength: {min: null as number | null, max: null as number | null},
-  length: {min: null as number | null, max: null as number | null},
-  dense: {min: null as number | null, max: null as number | null},
-  hardness: {min: null as number | null, max: null as number | null},
-  tear_resistance: {min: null as number | null, max: null as number | null},
-  elongation: {min: null as number | null, max: null as number | null},
-  quantity: {min: null as number | null, max: null as number | null},
-  price: {min: null as number | null, max: null as number | null},
+  count: {min: null as number | null, max: null as number | null},
+  amortization_price: {min: null as number | null, max: null as number | null},
+  price_in_time: {min: null as number | null, max: null as number | null},
 })
 
 const sort = ref<SortItem[]>([])
 
 const numericCols = [
-    /*
-  {key: 'DB', label: 'B/D'},
-  {key: 'height', label: 'Высота'},
-  {key: 'strength', label: 'Прочность'},
-  {key: 'length', label: 'Длина'},
-  {key: 'dense', label: 'Плотность'},
-  {key: 'hardness', label: 'Твёрдость'},
-  {key: 'tear_resistance', label: 'Сопр. разрыву'},
-  {key: 'elongation', label: 'Отн. удлин.'},
-     */
-  {key: 'quantity', label: 'Кол-во'},
-  {key: 'price', label: 'Цена'},
+  {key: 'count', label: 'Кол-во'},
+  {key: 'amortization_price', label: 'Цена армотизации?'},
+  {key: 'price_in_time', label: 'Цена в час'},
 ] as const
 
 const debounce = <F extends (...a: any[]) => any>(fn: F, ms = 300) => {
@@ -135,10 +137,8 @@ function buildQuery() {
   const f = filters.value
   const q: Record<string, any> = {}
 
-  if (f.mark.trim()) q.mark = f.mark.trim()
-  if (f.material_category_id != null) q.material_category_id = f.material_category_id
-  if (f.assortment_type_id != null) q.assortment_type_id = f.assortment_type_id
-  if (f.metal_types.length) q.material_type__in = f.metal_types.join(',')
+  if (f.name.trim()) q.mark = f.name.trim()
+  if (f.machine_type_id != null) q.machine_type_id = f.machine_type_id
 
   for (const col of numericCols) {
     const {min, max} = (f as any)[col.key]
@@ -149,7 +149,7 @@ function buildQuery() {
   if (sort.value.length) {
     q.order_by = sort.value.map(s => (s.dir === 'desc' ? `-${s.field}` : s.field)).join(',')
   }
-  // пагинацию добавишь ПОТОМ!!!, когда надо будет: q.page, q.limit
+  // пагинацию добавишь, когда надо будет: q.page, q.limit
   return q
 }
 
@@ -158,7 +158,7 @@ const doFetch = async () => {
   err.value = null
   try {
     const params = buildQuery()
-    const data = await materialApi.list(params) // или твой метод
+    const data = await machineApi.list(params) // или твой метод
     rows.value = data ?? []
   } catch (e: any) {
     err.value = e?.message ?? 'Ошибка загрузки'
@@ -176,13 +176,12 @@ onMounted(async () => {
 
 // ===== форма/действия =====
 
-// Хост формы
-const {
-  mode, busy, model, component, shellRef,
-  openView, openEdit, openCreate,
-  submit, remove, enterEdit, cancelEdit, close
-} = useFormHost()
-
+const openRef = ref(false)
+function onRefChanged() {
+  // если надо — перезагрузить таблицу или опции селектов
+  // reloadMaterials()
+  // reloadOptions()
+}
 
 // --- Действия из формы (BaseForm) ---
 async function onSubmitForm() {
@@ -197,14 +196,14 @@ async function onConfirmDelete() {
 
 const confirmOpen = ref(false)
 const deleting = ref(false)
-const itemToDelete = ref<MaterialOut | null>(null)
+const itemToDelete = ref<MachineOut | null>(null)
 const confirmText = computed(() => {
   const it = itemToDelete.value
   const tail = t('resources.dialog.delete_text') as string
-  return it ? `${it.mark ?? (it as any).name ?? ''}\n${tail}` : tail
+  return it ? `${it.name ?? (it as any).name ?? ''}\n${tail}` : tail
 })
 
-function askDelete(m: MaterialOut) {
+function askDelete(m: MachineOut) {
   itemToDelete.value = m
   confirmOpen.value = true
 }
@@ -213,7 +212,7 @@ async function confirmDelete() {
   if (!itemToDelete.value) return
   deleting.value = true
   try {
-    await materialApi.delete(itemToDelete.value.id)
+    await machineApi.delete(itemToDelete.value.id)
     notifySuccess(t('resources.notifications.deleted'))
     await doFetch()
   } catch (e: any) {
@@ -224,25 +223,21 @@ async function confirmDelete() {
     itemToDelete.value = null
   }
 }
-function humanMetal(t?: MetalType | null) {
-  if (!t) return '—'
-  return t.toString()
-}
 </script>
 
 <template>
   <div class="w-full flex flex-col gap-y-6 items-center">
     <!-- topbar -->
     <div class="w-full flex items-center justify-between mb-4">
-      <div class="text-lg font-semibold">Материалы</div>
+      <div class="text-lg font-semibold">Станки</div>
       <button class="btn btn-primary btn-sm gap-2"
-              @click="openCreate(MaterialForm, ModelType.Material)"
+              @click="openCreate(MachineForm, ModelType.Machine)"
       >
         <PlusCircle
             class="w-4 h-4"
-            @click="openCreate(MaterialForm, ModelType.Material);"
+            @click="openCreate(MachineForm, ModelType.Machine);"
         />
-       {{t(`resources.table.create`)}}
+        {{t(`resources.table.create`)}}
       </button>
     </div>
 
@@ -254,53 +249,30 @@ function humanMetal(t?: MetalType | null) {
                [&>th]:border-l [&>th]:border-base-300
                [&>th:first-child]:border-l-0"
         >
-          <!-- mark -->
+          <!-- name -->
           <th class="min-w-44">
             <div class="th-head">
-              <span>{{t(`resources.material.mark`)}}</span>
+              <span>{{t(`resources.machine.name`)}}</span>
               <button class="btn btn-ghost btn-xs tooltip"
-                      :data-tip="sortDir('mark')==='none'?'Без сорт.':(sortDir('mark')==='asc'?'Возр.':'Убыв.')"
-                      @click="(e)=>toggleSort('mark', e)">
-                <component :is="sortIcon(sortDir('mark'))" class="w-4 h-4"/>
+                      :data-tip="sortDir('name')==='none'?'Без сорт.':(sortDir('name')==='asc'?'Возр.':'Убыв.')"
+                      @click="(e)=>toggleSort('name', e)">
+                <component :is="sortIcon(sortDir('name'))" class="w-4 h-4"/>
               </button>
             </div>
           </th>
 
-          <!-- material type (из категории) -->
-          <th class="min-w-40">
-            <div class="th-head">
-              <span>{{t(`resources.material.material_type`)}}</span>
-              <button class="btn btn-ghost btn-xs tooltip"
-                      :data-tip="sortDir('material_type')==='none'?'Без сорт.':(sortDir('material_type')==='asc'?'Возр.':'Убыв.')"
-                      @click="(e)=>toggleSort('material_type', e)">
-                <component :is="sortIcon(sortDir('material_type'))" class="w-4 h-4"/>
-              </button>
-            </div>
-          </th>
-
-          <!-- category -->
+          <!-- machine type -->
           <th class="min-w-44">
             <div class="th-head">
               <span>{{t(`resources.material.material_category`)}}</span>
               <button class="btn btn-ghost btn-xs tooltip"
-                      :data-tip="sortDir('material_category_id')==='none'?'Без сорт.':(sortDir('material_category_id')==='asc'?'Возр.':'Убыв.')"
-                      @click="(e)=>toggleSort('material_category_id', e)">
-                <component :is="sortIcon(sortDir('material_category_id'))" class="w-4 h-4"/>
+                      :data-tip="sortDir('machine_type_id')==='none'?'Без сорт.':(sortDir('machine_type_id')==='asc'?'Возр.':'Убыв.')"
+                      @click="(e)=>toggleSort('machine_type_id', e)">
+                <component :is="sortIcon(sortDir('machine_type_id'))" class="w-4 h-4"/>
               </button>
             </div>
           </th>
 
-          <!-- assortment type -->
-          <th class="min-w-52">
-            <div class="th-head">
-              <span>{{t(`resources.material.assortment_type`)}}</span>
-              <button class="btn btn-ghost btn-xs tooltip"
-                      :data-tip="sortDir('assortment_type_id')==='none'?'Без сорт.':(sortDir('assortment_type_id')==='asc'?'Возр.':'Убыв.')"
-                      @click="(e)=>toggleSort('assortment_type_id', e)">
-                <component :is="sortIcon(sortDir('assortment_type_id'))" class="w-4 h-4"/>
-              </button>
-            </div>
-          </th>
 
           <!-- numeric columns -->
           <th v-for="col in numericCols" :key="col.key" class="min-w-40">
@@ -315,52 +287,26 @@ function humanMetal(t?: MetalType | null) {
           </th>
 
           <!-- sticky actions -->
-          <th class="min-w-32 sticky right-0 z-30 bg-base-100 sticky-right-shadow">Actions</th>
+          <th class="min-w-32 sticky right-0 z-30 bg-base-100 sticky-right-shadow">Действия</th>
         </tr>
 
         <!-- Ряд фильтров (по column) -->
         <tr class="[&>th]:px-3 [&>th]:py-2
                [&>th]:border-l [&>th]:border-base-300 [&>th:first-child]:border-l-0">
-          <!-- mark -->
+          <!-- name -->
           <th>
-            <input class="input input-bordered input-sm w-full" v-model="filters.mark" placeholder="марка..."/>
+            <input class="input input-bordered input-sm w-full" v-model="filters.name" placeholder="именование..."/>
           </th>
 
-          <!-- material type: чекбоксы вертикально -->
-          <th>
-            <div class="flex flex-col gap-2">
-              <label class="label cursor-pointer gap-2">
-                <input type="checkbox" class="checkbox checkbox-sm"
-                       :value="'FERROUS'" v-model="filters.metal_types" />
-                <span class="label-text text-sm">Черные</span>
-              </label>
-              <label class="label cursor-pointer gap-2">
-                <input type="checkbox" class="checkbox checkbox-sm"
-                       :value="'NONFERROUS'" v-model="filters.metal_types" />
-                <span class="label-text text-sm">Цветные</span>
-              </label>
-              <label class="label cursor-pointer gap-2">
-                <input type="checkbox" class="checkbox checkbox-sm"
-                       :value="'NONMETALLIC'" v-model="filters.metal_types" />
-                <span class="label-text text-sm">Неметаллич.</span>
-              </label>
-            </div>
-          </th>
 
-          <!-- category -->
+          <!-- machine type -->
           <th>
-            <select class="select select-bordered select-sm w-full" v-model="filters.material_category_id">
+            <select class="select select-bordered select-sm w-full" v-model="filters.machine_type_id">
               <option :value="null">Все</option>
-              <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
-            </select>
-          </th>
-
-          <!-- assortment type -->
-          <th>
-            <select class="select select-bordered select-sm w-full" v-model="filters.assortment_type_id">
-              <option :value="null">Все</option>
-              <option v-for="a in assortTypes" :key="a.id" :value="a.id">
-                {{ a.name }} (ГОСТ {{ a.gost.number }})
+              <option v-for="a in machineTypes" :key="a.id" :value="a.id">
+                {{ a.name }}
+                (метод {{ a.method?.name }})
+                (тип оп. {{a.method?.operation_type?.name}})
               </option>
             </select>
           </th>
@@ -403,13 +349,10 @@ function humanMetal(t?: MetalType | null) {
         </tr>
 
         <tr v-for="m in rows" :key="m.id">
-          <td class="whitespace-nowrap">{{ m.mark }}</td>
-          <td class="whitespace-nowrap">{{ humanMetal(m.category?.material_type ?? null) }}</td>
-          <td class="whitespace-nowrap">{{ m.category?.name ?? '—' }}</td>
+          <td class="whitespace-nowrap">{{ m.name }}</td>
           <td class="whitespace-nowrap">
             <div class="flex flex-col">
-              <span>{{ m.assortment_type?.name ?? '—' }}</span>
-              <small v-if="m.assortment_type?.gost" class="opacity-70">ГОСТ {{ m.assortment_type.gost.number }}</small>
+              <span>{{ m.machine_type?.name ?? '—' }}</span>
             </div>
           </td>
 
@@ -421,13 +364,13 @@ function humanMetal(t?: MetalType | null) {
             <div class="flex gap-2 justify-end pr-2">
               <button class="btn btn-xs tooltip"
                       :data-tip="$t('resources.table.view_tooltip')"
-                      @click="openView(MaterialForm, ModelType.Material, m.id)">
+                      @click="openView(MachineForm, ModelType.Machine, m.id)">
                 <Eye class="w-4 h-4"/>
                 View
               </button>
               <button class="btn btn-xs btn-accent gap-1 tooltip"
                       :data-tip="$t('resources.table.edit_tooltip')"
-                      @click="openEdit(MaterialForm, ModelType.Material, m.id)">
+                      @click="openEdit(MachineForm, ModelType.Machine, m.id)">
                 <Edit3 class="w-4 h-4"/>
                 Edit
               </button>
@@ -456,7 +399,7 @@ function humanMetal(t?: MetalType | null) {
       <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
     </div>
 
-    <!--Modal: Материал -->
+    <!--Modal: Станок -->
     <BaseForm
         :mode="mode"
         :model="model!"

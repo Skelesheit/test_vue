@@ -3,7 +3,7 @@ import {AssortmentTypeOut} from "@/services/interfaces/resources/assortment-type
 
 
 export interface MaterialBase {
-    brand: string;
+    mark: string;
 
     DB: number;
     height: number;
@@ -29,7 +29,7 @@ export interface MaterialCreate extends MaterialBase {
 }
 
 export interface MaterialUpdate {
-    brand?: string | null;
+    mark?: string | null;
 
     DB?: number | null;
     height?: number | null;
