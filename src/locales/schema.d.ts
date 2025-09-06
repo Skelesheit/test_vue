@@ -1,6 +1,8 @@
 export interface TranslationSchema {
     common: {
         create: string
+        delete: string
+        loading: string
         edit: string
         view: string
         save: string
@@ -10,6 +12,12 @@ export interface TranslationSchema {
         any: string
         resetFilters: string
         nothingFound: string
+        select_parent_first: string;
+        close: string,
+        search_by_name: string,
+
+        common: string,
+        name: string,
     }
 
 
@@ -310,8 +318,15 @@ export interface TranslationSchema {
         machine: {
             id: string;
             name: string;
-            machine_type_id: string;
             count: string;
+
+            method: string;
+            operation_type: string;
+            machine_type: string;
+
+            amortization_price: string,
+            price_in_time: string,
+
             X: string;
             Y: string;
             Z: string;
@@ -319,11 +334,34 @@ export interface TranslationSchema {
             D: string;
             no_data: string;
 
+            dictionaries: string;
+
+            add_operation_type: string
+            add_method: string;
+            add_machine_type: string;
+
             dialogs: {
                 createTitle: string,
                 editTitle: string
                 viewTitle: string,
             }
+
+            sections: {
+                classification: string,
+                general: string,
+                price: string,
+                geometric: string,
+                extra: string,
+            }
+
+            custom_fields: {
+                key: string,
+                value: string,
+                key_ph: string,
+                value_ph: string,
+                add_field: string,
+                key_duplicate: string
+            },
         };
         tooling: {
             id: string;

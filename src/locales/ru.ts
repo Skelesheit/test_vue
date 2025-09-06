@@ -3,6 +3,8 @@ import type { TranslationSchema } from './schema'
 const ru: TranslationSchema = {
     common: {
         create: 'Создать',
+        delete: 'Удалить',
+        loading: 'Загрузка',
         edit: 'Изменить',
         view: 'Просмотр',
         save: 'Сохранить',
@@ -10,8 +12,14 @@ const ru: TranslationSchema = {
         select_placeholder: 'Выберите…',
         any: 'Что нибудь',
         actions: 'действия',
+        close: 'Закрыть',
+        search_by_name: 'Искать по имени',
         resetFilters: 'Сбросить',
         nothingFound: 'Ничего не найдено',
+        select_parent_first: 'Выберите предыдущий',
+
+        common: "Главное",
+        name: "Имя",
     },
 
 
@@ -277,7 +285,7 @@ const ru: TranslationSchema = {
         operation_type: {
             id: "ID",
             name: "Название",
-            title: "Метод",
+            title: "Тип операции",
             no_data: "Нет собственных типов операций",
         },
         method: {
@@ -289,7 +297,7 @@ const ru: TranslationSchema = {
         },
         machine_type: {
             id: "ID",
-            title: "Метод",
+            title: "Тип станка",
             name: "Название",
             method_id: "ID метода",
             no_data: "Нет собственных типов станков",
@@ -297,19 +305,46 @@ const ru: TranslationSchema = {
         machine: {
             id: "ID",
             name: "Название",
-            machine_type_id: "Тип станка",
+            method: "Метод",
+            operation_type: "Тип операции",
+            machine_type: "Тип станка",
             count: "Количество",
             X: "X",
             Y: "Y",
             Z: "Z",
             H: "H",
             D: "D",
+
+            dictionaries: "Словари станков",
+
+            add_operation_type: "Добавить тип операции",
+            add_method: "добавить метод",
+            add_machine_type: "добавить тип станка",
+
+            amortization_price: "Цена армотизации",
+            price_in_time: "Цена в час",
             no_data: "Нет станков",
             dialogs : {
                 createTitle: 'Создание станка',
                 editTitle: 'Редактирование станка',
                 viewTitle: 'Просмотр свойств станка',
-            }
+            },
+            sections: {
+                classification: "Классификация",
+                general: "Общее",
+                price: "Цены",
+                geometric: "Геометрия",
+                extra: "Дополнительные поля",
+            },
+
+            custom_fields: {
+                key: "Ключ",
+                value: "Значение",
+                key_ph: "например, серийный_номер",
+                value_ph: "например, MX-2000-12",
+                add_field: "Добавить поле",
+                key_duplicate: "Ключ уже используется"
+            },
 
         },
         tooling: {

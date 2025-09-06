@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { FormAdapter } from '@/Pages/Resources/forms/form.adapter'
+import type { FormAdapter }
+  from '@/Pages/Resources/forms/form.adapter'
 import { FormMode } from '@/services/enums'
 import { createCrudApi } from '@/services/crud'
 import { useNotify } from '@/composables/useNotify'
@@ -10,50 +11,25 @@ import { useNotify } from '@/composables/useNotify'
 import type {
   MachineCreate,
   MachineOut,
-  MachineUpdate
+  MachineUpdate,
+  KV,
 } from '@/services/interfaces/resources/machine.interface'
 
 // ===== «Лесенка»: MachineType → Method → OperationType
 // (аналог category/assortment_type/gost у материала)
 import type {
-  MachineTypeCreate,
-  MachineTypeOut,
-  MachineTypeUpdate
+  MachineTypeOut
 } from '@/services/interfaces/resources/machine-type.interface'
 
-import type {
-  MethodCreate,
-  MethodOut,
-  MethodUpdate
-} from '@/services/interfaces/resources/method.interface'
-
-import type {
-  OperationTypeCreate,
-  OperationTypeOut,
-  OperationTypeUpdate
-} from '@/services/interfaces/resources/operation-type.interface'
-import {MaterialUpdate} from "@/services/interfaces";
+import MachineTypeSelector from "@/Pages/Resources/components/MachineTypeSelector.vue";
+import CustomFieldsEditor from "@/Pages/Resources/components/CustomFieldsEditor.vue";
 
 // ===== CRUD api (точно как в MaterialForm, только коллекции другие)
-const machineApi = createCrudApi<MachineOut, MachineCreate, MachineUpdate>('resources/machines')
-
-const machineTypeApi = createCrudApi<
-    MachineTypeOut,
-    MachineTypeCreate,
-    MachineTypeUpdate
->('resources/machine-types')
-
-const methodApi = createCrudApi<
-    MethodOut,
-    MethodCreate,
-    MethodUpdate
->('resources/methods')
-
-const operationTypeApi = createCrudApi<
-    OperationTypeOut,
-    OperationTypeCreate,
-    OperationTypeUpdate
->('resources/operation-types')
+const machineApi = createCrudApi<
+    MachineOut,
+    MachineCreate,
+    MachineUpdate
+>('resources/machines')
 
 // ===== i18n / notify
 const { t } = useI18n()
@@ -61,9 +37,7 @@ const { success: notifySuccess, error: notifyError } = useNotify()
 
 // ===== props/emit — оставляем как в материале
 const props = defineProps<{
-  modelValue: boolean
   mode: FormMode
-  record: MachineOut | null
 }>()
 
 const emit = defineEmits<{
@@ -95,6 +69,8 @@ type MachineVM = {
 
   // раскрытые объекты (аналог category/assortment_type/gost у материала)
   machine_type: MachineTypeOut | null
+
+  custom_fields: KV | null;
 }
 
 // ===== начальное VM (как у материала)
@@ -115,12 +91,9 @@ const vm = reactive<MachineVM>({
   D: null,
 
   machine_type: null,
-})
 
-// ===== справочники для селектов (оставляем имена массивов по смыслу)
-const machineTypes = ref<MachineTypeOut[]>([])
-const methods = ref<MethodOut[]>([])
-const operationTypes = ref<OperationTypeOut[]>([])
+  custom_fields: {} ,
+})
 
 // ===== служебные флаги (как в материале)
 let readOnly = false
@@ -146,6 +119,8 @@ function toVM(dto: MachineOut): MachineVM {
 
     machine_type_id: dto.machine_type_id ?? null,
     machine_type: dto.machine_type ?? null,
+
+    custom_fields: dto.custom_fields ?? null,
   }
 }
 
@@ -164,16 +139,29 @@ function toCreate(state: MachineVM): MachineCreate {
     D: state.D ?? 0,
 
     machine_type_id: Number(state.machine_type_id ?? 0),
+
+    custom_fields: vm.custom_fields,
   }
 }
 
 function toUpdate(): MachineUpdate {
   const p: MachineUpdate = {}
   p.name = vm.name.trim()
+  p.custom_fields = {}
   // ПОТОМ ДОПРАВИТЬ ДОДЕЛАТЬ!!!
   if (vm.amortization_price != null) p.amortization_price = vm.amortization_price
   if (vm.price_in_time != null) p.price_in_time = vm.price_in_time
   if (vm.machine_type_id != null) p.machine_type_id = vm.machine_type_id
+
+
+  if (vm.custom_fields != null) p.custom_fields = vm.custom_fields
+
+  if (vm.X != null) p.X = vm.X
+  if (vm.Y != null) p.Y = vm.Y
+  if (vm.Z != null) p.Z = vm.Z
+  if (vm.H != null) p.H = vm.H
+  if (vm.D != null) p.D = vm.D
+
   return p
 }
 
@@ -240,64 +228,17 @@ async function remove(id: number): Promise<boolean> {
 // - loadAssortmentTypesForCategory → теперь грузит methods по machine_type_id
 // - loadGostsForType → теперь грузит operationTypes по method_id
 
-async function loadMachineTypes() {
-  machineTypes.value = await machineTypeApi.list() ?? []
-  return machineTypes.value
-}
-
-async function loadMethods() {
-  // раньше: ассорт. типы по категории; теперь — методы по типу станка
-  if (!vm.machine_type?.method) {
-    methods.value = []
-    return methods.value
-  }
-  // если нужен фильтр по типу: methodApi.list({ machine_type_id: vm.machine_type_id })
-  methods.value = await methodApi.list() ?? []
-  return methods.value
-}
-
-async function loadOperationTypes() {
-  // раньше: ГОСТы по ассорт. типу; теперь — операции по методу
-  if (!vm.machine_type?.method?.operation_type) {
-    operationTypes.value = []
-    return operationTypes.value
-  }
-  // если нужен фильтр по методу: operationTypeApi.list({ method_id: vm.method_id })
-  operationTypes.value = await operationTypeApi.list() ?? []
-  return operationTypes.value
-}
-
 function validate() {
   return !!(vm.name && vm.name.trim().length)
 }
 
 // ===== load (как у материала): тянем справочники, потом dto (если edit/view)
 async function load(id?: number): Promise<void> {
-  await loadMachineTypes()
-  await loadMethods()
-  await loadOperationTypes()
-
   if (!id) return
   const dto = await machineApi.get(id)
   if (!dto) return
   Object.assign(vm, toVM(dto))
 }
-
-// ===== watch «лесенки», ровно как у материала — только поля другие
-watch(() => vm.machine_type_id, async (val) => {
-  if (!val) {
-    vm.machine_type = null
-    methods.value = []
-  }
-  await loadMethods()
-})
-
-watch(() => vm.machine_type?.method, async (val) => {
-  if (!val) {
-    operationTypes.value = []
-  }
-  await loadOperationTypes()
-})
 
 // ===== expose — под интерфейс FormAdapter (как в материал форме)
 const adapter: FormAdapter<MachineVM, MachineCreate, MachineOut, MachineUpdate> = {
@@ -317,7 +258,6 @@ defineExpose({ adapter })
 // ===== mount — как в материале: если record пришёл, закинем в VM
 onMounted(async () => {
   await load()
-  if (props.record) Object.assign(vm, toVM(props.record))
 })
 </script>
 
@@ -338,12 +278,32 @@ onMounted(async () => {
       {{ isCreate ? t('common.create') : (readOnly ? t('common.view') : t('common.edit')) }}
     </div>
   </div>
-    <div class="flex flex-col gap-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">{{ $t('resources.machine.name') }}</span>
-          </label>
+  <div class="flex flex-col gap-4">
+
+    <!-- Секция: Классификация -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.machine.sections.classification') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+      <!-- селектор сам грузит данные и показывает +- модалки -->
+      <MachineTypeSelector
+          v-model="vm.machine_type_id"
+          :read-only="isView"
+          :autoload="true"
+      />
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.machine.sections.general') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+        <label class="form-control">
+          <span class="label-text">{{ $t('resources.machine.name') }}</span>
           <input
               v-model="vm.name"
               class="input input-bordered"
@@ -351,7 +311,30 @@ onMounted(async () => {
               :readonly="isView"
               required
           />
+        </label>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.count') }}</span>
+          </label>
+          <input
+              v-model="vm.count"
+              class="input input-bordered"
+              type="text"
+              :readonly="isView"
+              required
+          />
         </div>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.machine.sections.price') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
         <div class="form-control">
           <label class="label">
@@ -367,7 +350,6 @@ onMounted(async () => {
               required
           />
         </div>
-
         <div class="form-control">
           <label class="label">
             <span class="label-text">{{ $t('resources.machine.price_in_time') }}</span>
@@ -384,5 +366,105 @@ onMounted(async () => {
         </div>
 
       </div>
-    </div>
+
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.machine.sections.geometric') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.X') }}</span>
+          </label>
+          <input
+              v-model.number="vm.X"
+              class="input input-bordered"
+              type="number"
+              step="0.0001"
+              min="0"
+              :readonly="isView"
+              required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.Y') }}</span>
+          </label>
+          <input
+              v-model.number="vm.Y"
+              class="input input-bordered"
+              type="number"
+              step="0.0001"
+              min="0"
+              :readonly="isView"
+              required
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.Z') }}</span>
+          </label>
+          <input
+              v-model.number="vm.Z"
+              class="input input-bordered"
+              type="number"
+              step="0.0001"
+              min="0"
+              :readonly="isView"
+              required
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.H') }}</span>
+          </label>
+          <input
+              v-model.number="vm.H"
+              class="input input-bordered"
+              type="number"
+              step="0.0001"
+              min="0"
+              :readonly="isView"
+              required
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">{{ $t('resources.machine.D') }}</span>
+          </label>
+          <input
+              v-model.number="vm.D"
+              class="input input-bordered"
+              type="number"
+              step="0.0001"
+              min="0"
+              :readonly="isView"
+              required
+          />
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="space-y-4 w-full">
+      <div class="flex items-center gap-3">
+        <h3 class="text-base font-semibold">{{ t('resources.machine.sections.extra') }}</h3>
+        <div class="divider grow my-0"></div>
+      </div>
+          <CustomFieldsEditor
+              class="form-control w-full"
+              v-model:fields="vm.custom_fields"
+              :mode="FormMode.EDIT"
+          />
+    </section>
+  </div>
 </template>

@@ -27,12 +27,26 @@ import ConfirmDialog from '@/components/modals/dialog/ConfirmDialog.vue'
 
 import MachineForm from '@/Pages/Resources/forms/MachineForm.vue'
 
-import {ArrowDownAZ, ArrowUpAZ, ArrowUpDown, Edit3, Eye, ListTree, PlusCircle, Trash2,} from 'lucide-vue-next'
-import ReferenceDirectoryModal from "@/Pages/Resources/forms/ReferenceDirectoryModal.vue";
+import {
+  ArrowDownAZ,
+  ArrowUpAZ,
+  ArrowUpDown,
+  Edit3,
+  Eye,
+  ListTree,
+  PlusCircle,
+  Trash2
+} from 'lucide-vue-next'
+
+import MachineDictionaries
+  from "@/Pages/Resources/components/MachineDictionaries.vue";
 
 // i18n & notifications
 const { t } = useI18n()
 const { error: notifyError, success: notifySuccess } = useNotify()
+
+// reactive is_show_modal
+const showDicts = ref(false)
 
 // Хост формы
 const {
@@ -94,7 +108,7 @@ const sort = ref<SortItem[]>([])
 
 const numericCols = [
   {key: 'count', label: 'Кол-во'},
-  {key: 'amortization_price', label: 'Цена армотизации?'},
+  {key: 'amortization_price', label: 'Цена армотизации'},
   {key: 'price_in_time', label: 'Цена в час'},
 ] as const
 
@@ -264,7 +278,7 @@ async function confirmDelete() {
           <!-- machine type -->
           <th class="min-w-44">
             <div class="th-head">
-              <span>{{t(`resources.material.material_category`)}}</span>
+              <span>{{t(`resources.machine.machine_type`)}}</span>
               <button class="btn btn-ghost btn-xs tooltip"
                       :data-tip="sortDir('machine_type_id')==='none'?'Без сорт.':(sortDir('machine_type_id')==='asc'?'Возр.':'Убыв.')"
                       @click="(e)=>toggleSort('machine_type_id', e)">
@@ -324,7 +338,7 @@ async function confirmDelete() {
 
           <th class="sticky right-0 z-30 bg-base-100 sticky-right-shadow">
             <div class="flex flex-col gap-2  items-center">
-              <button class="btn btn-ghost" @click="openRef = true" :title="t('resources.reference.title')">
+              <button class="btn btn-ghost" @click="showDicts = true" :title="t('resources.reference.title')">
                 <ListTree class="w-4 h-4 mr-1"/>{{ t('resources.reference.title') }}
               </button>
             </div>
@@ -423,9 +437,9 @@ async function confirmDelete() {
         @confirm="confirmDelete"
     />
     <!--Modal: Справочник -->
-    <ReferenceDirectoryModal
-        v-model:open="openRef"
-        @changed="onRefChanged" />
+    <MachineDictionaries
+        v-model="showDicts"
+    />
   </div>
 </template>
 

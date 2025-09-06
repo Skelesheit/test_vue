@@ -1,5 +1,8 @@
 // src/services/interfaces/resources/machine.interface.ts
-import { MachineTypeOut } from "@/services/interfaces/resources/machine-type.interface";
+import {MachineTypeOut
+} from "@/services/interfaces/resources/machine-type.interface";
+
+export type KV = Record<string, string>
 
 export interface MachineBase {
     name: string;
@@ -15,6 +18,8 @@ export interface MachineBase {
 
     amortization_price: number;
     price_in_time: number;
+
+    custom_fields?: KV | null;
 }
 
 export interface MachineCreate extends MachineBase {}
@@ -33,6 +38,8 @@ export interface MachineUpdate {
 
     amortization_price?: number | null;
     price_in_time?: number | null;
+
+    custom_fields?: KV | null;
 }
 
 export interface MachineOut extends MachineBase {

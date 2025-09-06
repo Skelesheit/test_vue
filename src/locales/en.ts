@@ -5,9 +5,20 @@ const en: TranslationSchema = {
         create: 'Create',
         edit: 'Edit',
         view: 'View',
+        delete: 'delete',
+        loading: 'loading',
         save: 'Save',
         cancel: 'Cancel',
         select_placeholder: 'Select…',
+        actions: "Actions",
+        any: "Anything",
+        resetFilters: "reset",
+        nothingFound: "nothing found",
+        close: 'close',
+        search_by_name: 'search by name',
+        select_parent_first: 'Select back option',
+        common: "Common",
+        name: "name",
     },
     welcome: 'Welcome',
     register: 'Sign up',
@@ -268,17 +279,20 @@ const en: TranslationSchema = {
         },
         operation_type: {
             id: "Id",
+            title: "Operation type",
             name: "Name",
             no_data: "there isn't your operation types"
         },
         method: {
             id: "Id",
             name: "Name",
+            title: "Method",
             operation_type_id: "Operation type id",
             no_data: "there isn't your methods"
         },
         machine_type: {
             id: "Id",
+            title: "Machine type",
             name: "Name",
             method_id: "Method id",
             no_data: "there isn't your machines type"
@@ -286,14 +300,47 @@ const en: TranslationSchema = {
         machine: {
             id: "Id",
             name: "Name",
-            machine_type_id: "Machine type id",
+            method: "Method",
+            operation_type: "Operation type",
+            machine_type: "Machine type",
             count: "Count",
             X: "X",
             Y: "Y",
             Z: "Z",
             H: "H",
             D: "D",
-            no_data: "there isn't your machines"
+            no_data: "there isn't your machines",
+
+            amortization_price: "Amortization price",
+            price_in_time: "Price in time",
+
+            dictionaries: "Machines dictionary",
+
+            add_operation_type: "Add operation type",
+            add_method: "Add method",
+            add_machine_type: "Add machine type",
+
+            dialogs : {
+                createTitle: 'Создание станка',
+                editTitle: 'Редактирование станка',
+                viewTitle: 'Просмотр свойств станка',
+            },
+            sections: {
+                classification: "Classification",
+                general: "General",
+                price: "Price",
+                geometric: "Geometry",
+                extra: "Extra fields",
+            },
+
+            custom_fields: {
+                key: "Key",
+                value: "value",
+                key_ph: "key, serial number",
+                value_ph: "example, MX-2000-12",
+                add_field: "Add field",
+                key_duplicate: "key is exists"
+            },
         },
         tooling: {
             id: "Id",
