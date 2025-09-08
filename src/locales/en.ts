@@ -19,6 +19,8 @@ const en: TranslationSchema = {
         select_parent_first: 'Select back option',
         common: "Common",
         name: "name",
+
+        all: "All",
     },
     welcome: 'Welcome',
     register: 'Sign up',
@@ -354,9 +356,12 @@ const en: TranslationSchema = {
             A: "A",
             h_d: "H d",
             no_data: "there isn't your tooling",
+
+            dictionaries: "Справочник",
         },
         tool: {
             id: "Id",
+            title: "Инструменты",
             name: "Name",
             mark: "Mark",
             gost: "Gost",
@@ -367,6 +372,9 @@ const en: TranslationSchema = {
             I_max_cut: "I max cut",
             S: "S",
             no_data: "there isn't your tools",
+            dictionaries: "Справочник",
+
+            machine: "Machine",
         },
         gost: {
             id: "Id",

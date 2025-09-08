@@ -52,15 +52,15 @@ async function submit() {
 
 <template>
   <dialog class="modal" :open="props.open">
-    <div class="modal-box w-full max-w-md">
-      <h3 class="font-semibold text-lg">{{ t('resources.gost.create_title') }}</h3>
-      <div class="mt-4 space-y-4">
+    <div class="modal-box w-full max-w-md p-6 gap-4">
+      <h3 class="font-semibold text-lg mb-6">{{ t('resources.gost.create_title') }}</h3>
+      <div class="mt-4 space-y-8">
         <label class="form-control">
-          <span class="label-text">{{ t('resources.gost.name') }}</span>
-          <input class="input input-bordered" v-model.trim="name" type="text" required />
+          <span class="label-text mb-3">{{ t('resources.gost.name') }}</span>
+          <input class="input input-bordered w-full" v-model.trim="name" type="text" required />
         </label>
       </div>
-      <div class="modal-action">
+      <div class="modal-action mt-8">
         <button class="btn btn-error" @click="close">{{ t('common.cancel') }}</button>
         <button class="btn btn-primary" :disabled="busy || !name" @click="submit">
           <span v-if="busy" class="loading loading-spinner mr-2"></span>
@@ -72,4 +72,5 @@ async function submit() {
       <button aria-label="close"></button>
     </form>
   </dialog>
+
 </template>

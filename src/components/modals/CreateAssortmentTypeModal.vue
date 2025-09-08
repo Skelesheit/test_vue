@@ -82,18 +82,18 @@ function onGostCreated(g: GostOut) {
 
 <template>
   <dialog class="modal" :open="props.open">
-    <div class="modal-box w-full max-w-lg">
-      <h3 class="font-semibold text-lg">{{ t('resources.assortment_type.create_title') }}</h3>
+    <div class="modal-box w-full max-w-lg p-6">
+      <h3 class="font-semibold text-lg mb-6">{{ t('resources.assortment_type.create_title') }}</h3>
 
-      <div class="mt-4 space-y-4">
+      <div class="mt-4 space-y-6 gap-4">
         <label class="form-control">
-          <span class="label-text">{{ t('resources.assortment_type.name') }}</span>
-          <input class="input input-bordered" v-model.trim="name" type="text" required/>
+          <span class="label-text mb-3">{{ t('resources.assortment_type.name') }}</span>
+          <input class="input input-bordered w-full mt-1" v-model.trim="name" type="text" required/>
         </label>
 
         <label class="form-control">
-          <span class="label-text">{{ t('resources.gost.title') }}</span>
-          <div class="join w-full">
+          <span class="label-text mb-3">{{ t('resources.gost.title') }}</span>
+          <div class="join w-full mt-1">
             <select class="select select-bordered join-item w-full" v-model.number="gost_id" required>
               <option :value="null" disabled>{{ t('common.select_placeholder') }}</option>
               <option v-for="g in gosts" :key="g.id" :value="g.id">
@@ -105,7 +105,7 @@ function onGostCreated(g: GostOut) {
         </label>
       </div>
 
-      <div class="modal-action">
+      <div class="modal-action mt-6">
         <button class="btn btn-error" @click="close">{{ t('common.cancel') }}</button>
         <button class="btn btn-primary" :disabled="busy || !name || !gost_id" @click="submit">
           <span v-if="busy" class="loading loading-spinner mr-2"></span>

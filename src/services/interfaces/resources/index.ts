@@ -6,3 +6,5 @@ export * from './operation-type.interface';
 export * from './method.interface';
 export * from './machine-type.interface';
 export * from './machine.interface';
+export * from './tools.interface'
+export * from './tooling.interface';

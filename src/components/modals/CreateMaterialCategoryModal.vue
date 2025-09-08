@@ -78,26 +78,26 @@ async function submit() {
 
 <template>
   <dialog class="modal" :open="open">
-    <div class="modal-box relative w-full max-w-lg">
+    <div class="modal-box relative w-full max-w-xl p-8">
       <!-- крестик -->
       <button
           type="button"
-          class="btn btn-ghost btn-sm btn-circle absolute right-2 top-2"
+          class="btn btn-ghost btn-sm btn-circle absolute right-4 top-4"
           :title="t('common.cancel')"
           @click="close"
           aria-label="close"
       >✕</button>
 
-      <h3 class="font-semibold text-lg">
+      <h3 class="font-semibold text-xl mb-12">
         {{ t('resources.material_category.create_title') }}
       </h3>
 
-      <div class="mt-5 space-y-4">
+      <div class="mt-8 space-y-12 gap-6">
         <label class="form-control">
-          <span class="label-text">{{ t('resources.material_category.name') }}</span>
+          <span class="label-text mb-5 font-medium">{{ t('resources.material_category.name') }}</span>
           <input
               ref="nameInput"
-              class="input input-bordered mt-1"
+              class="input input-bordered w-full mt-2"
               v-model.trim="name"
               type="text"
               required
@@ -106,9 +106,9 @@ async function submit() {
         </label>
 
         <label class="form-control">
-          <span class="label-text">{{ t('resources.material_category.material_type') }}</span>
+          <span class="label-text mb-5 font-medium">{{ t('resources.material_category.material_type') }}</span>
           <select
-              class="select select-bordered mt-1"
+              class="select select-bordered w-full mt-2"
               v-model="material_type"
               required
           >
@@ -126,7 +126,7 @@ async function submit() {
         </label>
       </div>
 
-      <div class="modal-action">
+      <div class="modal-action mt-12">
         <button class="btn btn-error" @click="close">
           {{ t('common.cancel') }}
         </button>

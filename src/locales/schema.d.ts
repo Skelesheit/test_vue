@@ -15,7 +15,7 @@ export interface TranslationSchema {
         select_parent_first: string;
         close: string,
         search_by_name: string,
-
+        all: string,
         common: string,
         name: string,
     }
@@ -375,19 +375,25 @@ export interface TranslationSchema {
             A: string;
             h_d: string;
             no_data: string;
+
+            dictionaries: string;
         };
         tool: {
             id: string;
             name: string;
+            title: string;
             mark: string;
             gost: string;
             machine_id: string;
+            machine: string;
             K_H_D: string;
             alpha_B_d: string;
             L: string;
             I_max_cut: string;
             S: string;
             no_data: string;
+
+            dictionaries: string;
         };
         gost: {
             id: string;

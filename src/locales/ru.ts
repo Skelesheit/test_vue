@@ -20,6 +20,7 @@ const ru: TranslationSchema = {
 
         common: "Главное",
         name: "Имя",
+        all: "Все",
     },
 
 
@@ -359,19 +360,25 @@ const ru: TranslationSchema = {
             A: "A",
             h_d: "h/d",
             no_data: "Нет оснасток",
+            dictionaries: "Справочник",
+
         },
         tool: {
             id: "ID",
+            title: "Инструменты",
             name: "Название",
             mark: "Марка",
             gost: "ГОСТ",
             machine_id: "ID станка",
+            machine: "Станок",
             K_H_D: "K_H_D",
             alpha_B_d: "α B/d",
             L: "L",
             I_max_cut: "I max cut",
             S: "S",
             no_data: "Нет инструментов",
+
+            dictionaries: "Справочник",
         },
         gost: {
             id: "ID",

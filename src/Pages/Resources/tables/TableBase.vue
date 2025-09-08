@@ -12,6 +12,8 @@ const props = defineProps<{
 // Ленивые компоненты
 const MaterialTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/MaterialTable.vue'))
 const MachineTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/NewMachineTable.vue'))
+const ToolTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/ToolTable.vue'))
+const ToolingTable = defineAsyncComponent(() => import('@/Pages/Resources/tables/ToolingTable.vue'))
 // ... остальные
 
 watch(currentModelType, (newVal, oldVal) => {
@@ -29,6 +31,8 @@ watch(currentModelType, (newVal, oldVal) => {
 
     <Component :is="MaterialTable" v-else-if="props.modelType == ModelType.Material" />
     <Component :is="MachineTable" v-else-if="props.modelType == ModelType.Machine" />
+    <Component :is="ToolTable" v-else-if="props.modelType == ModelType.Tool" />
+    <Component :is="ToolingTable" v-else-if="props.modelType == ModelType.Tooling" />
     <!-- остальные подрубаем ... -->
   </main>
 </template>
